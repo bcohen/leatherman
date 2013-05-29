@@ -1,0 +1,27 @@
+<package>
+  <description brief="leatherman">
+
+     leatherman
+
+  </description>
+  <author>Benjamin Cohen</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/leatherman</url>
+
+  <depend package="roscpp" />
+  <depend package="bullet" />
+  <depend package="tf" />
+  <depend package="angles" />
+  <depend package="geometry_msgs" />
+  <depend package="geometric_shapes" />
+  <depend package="trajectory_msgs" />
+  <depend package="kdl" />
+  <rosdep name="eigen" />
+
+  <export>
+    <cpp cflags="-I${prefix}/include  -O3 -g" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lleatherman"/>
+  </export>
+
+</package>
+
