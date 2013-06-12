@@ -13,6 +13,7 @@
   <depend package="bullet" />
   <depend package="tf" />
   <depend package="angles" />
+  <depend package="sensor_msgs" />
   <depend package="geometry_msgs" />
   <depend package="geometric_shapes" />
   <depend package="trajectory_msgs" />

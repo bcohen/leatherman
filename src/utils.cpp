@@ -240,6 +240,16 @@ void leatherman::quatMsgToRPY(const geometry_msgs::Quaternion &q, double &r, dou
   tf_pose.getBasis().getRPY(r,p,y);
 }
 
+void leatherman::getRPY(const geometry_msgs::Quaternion &qmsg, double &roll, double &pitch, double &yaw)
+{
+  geometry_msgs::Pose pose;
+  pose.orientation = qmsg;
+  tf::Pose tf_pose;
+  tf::poseMsgToTF(pose, tf_pose);
+  tf_pose.getBasis().getRPY(roll,pitch,yaw);
+  ROS_DEBUG("[utils] rpy: %0.3f %0.3f %0.3f  quat: %0.3f %0.3f %0.3f %0.3f\n", roll, pitch, yaw, qmsg.x, qmsg.y, qmsg.z, qmsg.w);fflush(stdout);
+}
+
 double leatherman::getYaw(const geometry_msgs::Quaternion &q)
 {
   tf::Transform tf_pose;
@@ -475,4 +485,38 @@ void leatherman::getIntermediatePoints(KDL::Vector a, KDL::Vector b, double d, s
   }
   points.push_back(b);
 }
+
+bool leatherman::findJointPosition(const sensor_msgs::JointState &state, std::string name, double &position)
+{
+  for(size_t i = 0; i < state.name.size(); i++)
+  {
+    if(name.compare(state.name[i]) == 0)
+    {
+      position = state.position[i];
+      return true;
+    }
+  }
+  return false;
+}
+
+bool leatherman::getJointPositions(const sensor_msgs::JointState &state, std::vector<std::string> &names, std::vector<double> &positions)
+{
+  size_t nind = 0;
+  positions.resize(names.size());
+  for(size_t i = 0; i < state.position.size(); ++i)
+  {
+    if(names[nind].compare(state.name[i]) == 0)
+    {
+      positions[nind] = state.position[i];
+      nind++;
+    } 
+    if(nind == names.size())
+      break;
+  }
+  if(nind != names.size())
+    return false;
+
+  return true; 
+}
+
 

@@ -13,6 +13,7 @@
 #include <angles/angles.h>
 #include <kdl/frames.hpp>
 #include <trajectory_msgs/JointTrajectory.h>
+#include <sensor_msgs/JointState.h>
 
 namespace leatherman
 {
@@ -32,6 +33,7 @@ namespace leatherman
   double getYaw(const geometry_msgs::Quaternion &q);
   void setRPY(double roll, double pitch, double yaw, Eigen::Matrix3d &m);
   void getRPY(const Eigen::Matrix3d &m, double &roll, double &pitch, double &yaw);
+  void getRPY(const geometry_msgs::Quaternion &qmsg, double &roll, double &pitch, double &yaw);
   btQuaternion setRPY(const btScalar& roll, const btScalar& pitch, const btScalar& yaw);
 
   /* Geometry */
@@ -52,5 +54,10 @@ namespace leatherman
   void multiply(const geometry_msgs::Pose &a, const geometry_msgs::Pose &b, geometry_msgs::Pose &c);
   void comparePoses(const std::vector<double> &a, const std::vector<double> &b, std::vector<double> &diff);
   void comparePosesAbsolute(const std::vector<double> &a, const std::vector<double> &b, std::vector<double> &diff);
+
+  /* Search (string comparisons) */
+  bool findJointPosition(const sensor_msgs::JointState &state, std::string name, double &position);
+  bool getJointPositions(const sensor_msgs::JointState &state, std::vector<std::string> &names, std::vector<double> &positions);
+
 }
 
