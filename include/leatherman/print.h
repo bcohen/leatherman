@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <kdl/frames.hpp>
+#include <kdl/chain.hpp>
 
 namespace leatherman
 {
@@ -18,5 +19,6 @@ namespace leatherman
 
   void printAffine3d(const Eigen::Affine3d &a, std::string text);
   void printKDLFrame(const KDL::Frame &f, std::string text);
+  void printKDLChain(const KDL::Chain &c, std::string text);
 }
 

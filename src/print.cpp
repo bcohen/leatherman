@@ -75,3 +75,31 @@ void leatherman::printKDLFrame(const KDL::Frame &f, std::string text)
   ROS_INFO("[%s] xyz: %0.3f %0.3f %0.3f  rpy: %0.3f %0.3f %0.3f", text.c_str(), f.p[0], f.p[1], f.p[2], r, p, y);
 }
 
+void leatherman::printKDLChain(const KDL::Chain &c, std::string text)
+{
+  ROS_INFO("[%s] # segments: %d  # joints: %d", text.c_str(), c.getNrOfSegments(), c.getNrOfJoints());
+  double r,p,y,jnt_pos = 0;
+  for(size_t j = 0; j < c.getNrOfSegments(); ++j)
+  {
+    c.getSegment(j).pose(jnt_pos).M.GetRPY(r,p,y);
+    ROS_INFO("[%s] [%2d] segment: %21s  xyz: %0.3f %0.3f %0.3f  rpy: %0.3f %0.3f %0.3f", 
+        text.c_str(), int(j),
+        c.getSegment(j).getName().c_str(),
+        c.getSegment(j).pose(jnt_pos).p.x(),
+        c.getSegment(j).pose(jnt_pos).p.y(),
+        c.getSegment(j).pose(jnt_pos).p.z(),
+        r,p,y);
+
+    c.getSegment(j).getJoint().pose(jnt_pos).M.GetRPY(r,p,y);
+    ROS_INFO("[%s]        joint: %21s  xyz: %0.3f %0.3f %0.3f  rpy: %0.3f %0.3f %0.3f  type: %s", 
+        text.c_str(),
+        c.getSegment(j).getJoint().getName().c_str(),
+        c.getSegment(j).getJoint().pose(jnt_pos).p.x(),
+        c.getSegment(j).getJoint().pose(jnt_pos).p.y(),
+        c.getSegment(j).getJoint().pose(jnt_pos).p.z(),
+        r,p,y,
+        c.getSegment(j).getJoint().getTypeName().c_str());
+
+  }
+}
+
