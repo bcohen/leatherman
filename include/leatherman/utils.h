@@ -1,3 +1,6 @@
+#ifndef _LEATHERMAN_UTILS_
+#define _LEATHERMAN_UTILS_
+
 #include <ros/ros.h>
 #include <iostream>
 #include <cstdlib>
@@ -12,12 +15,12 @@
 #include <Eigen/Geometry>
 #include <angles/angles.h>
 #include <kdl/frames.hpp>
+#include <kdl/chain.hpp>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
 
 namespace leatherman
 {
-
   /* Conversions */
   void poseVectorToPoseMsg(const std::vector<double> &pose, geometry_msgs::Pose &pose_msg);
   void poseMsgToPoseVector(const geometry_msgs::Pose &pose, std::vector<double> &posev);
@@ -58,6 +61,7 @@ namespace leatherman
   /* Search (string comparisons) */
   bool findJointPosition(const sensor_msgs::JointState &state, std::string name, double &position);
   bool getJointPositions(const sensor_msgs::JointState &state, std::vector<std::string> &names, std::vector<double> &positions);
-
+  bool getJointIndex(const KDL::Chain &c, std::string name, int &index);
 }
 
+#endif

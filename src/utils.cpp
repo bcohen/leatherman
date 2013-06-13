@@ -519,4 +519,16 @@ bool leatherman::getJointPositions(const sensor_msgs::JointState &state, std::ve
   return true; 
 }
 
+bool leatherman::getJointIndex(const KDL::Chain &c, std::string name, int &index)
+{
+  for(size_t j = 0; j < c.getNrOfSegments(); ++j)
+  {
+    if(c.getSegment(j).getJoint().getName().compare(name) == 0)
+    {
+      index = j;
+      return true;
+    }
+  }
+  return false;
+}
 
