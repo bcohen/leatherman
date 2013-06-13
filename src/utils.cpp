@@ -532,3 +532,63 @@ bool leatherman::getJointIndex(const KDL::Chain &c, std::string name, int &index
   return false;
 }
 
+bool leatherman::getSegmentIndex(const KDL::Chain &c, std::string name, int &index)
+{
+  for(size_t j = 0; j < c.getNrOfSegments(); ++j)
+  {
+    if(c.getSegment(j).getName().compare(name) == 0)
+    {
+      index = j;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool leatherman::getSegmentOfJoint(const KDL::Tree &tree, std::string joint, std::string &segment)
+{ 
+  KDL::SegmentMap smap = tree.getSegments();
+  for(std::map<std::string, KDL::TreeElement>::const_iterator iter = smap.begin(); iter != smap.end(); ++iter)
+  { 
+    if(iter->second.segment.getJoint().getName().compare(joint) == 0)
+    { 
+      segment = iter->second.segment.getName();
+      return true;
+    }
+  }
+  return false;
+}
+
+bool leatherman::getChainTip(const KDL::Tree &tree, const std::vector<std::string> &segments, std::string chain_root, std::string &chain_tip)
+{
+  KDL::Chain chain;
+
+  // compute # of links each link would include if tip of chain
+  for(size_t i = 0; i < segments.size(); ++i)
+  {
+    // create chain with link i as the tip
+    if (!tree.getChain(chain_root, segments[i], chain))
+    {
+      ROS_ERROR("Failed to fetch the KDL chain. This code only supports a set of segments that live within a single kinematic chain. (root: %s, tip: %s)", chain_root.c_str(), segments[i].c_str());
+      return false;
+    }
+
+    int index;
+    size_t num_segments_included = 0;
+    for(size_t j = 0; j < segments.size(); ++j)
+    {
+      if(leatherman::getSegmentIndex(chain, segments[j], index))
+        num_segments_included++;
+    }
+    
+    if(num_segments_included == segments.size())
+    { 
+      chain_tip = segments[i];
+      return true;
+    }
+  }
+  return false;
+}
+
+
+

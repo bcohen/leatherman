@@ -16,6 +16,7 @@
 #include <angles/angles.h>
 #include <kdl/frames.hpp>
 #include <kdl/chain.hpp>
+#include <kdl/tree.hpp>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
 
@@ -62,6 +63,9 @@ namespace leatherman
   bool findJointPosition(const sensor_msgs::JointState &state, std::string name, double &position);
   bool getJointPositions(const sensor_msgs::JointState &state, std::vector<std::string> &names, std::vector<double> &positions);
   bool getJointIndex(const KDL::Chain &c, std::string name, int &index);
+  bool getSegmentIndex(const KDL::Chain &c, std::string name, int &index);
+  bool getSegmentOfJoint(const KDL::Tree &tree, std::string joint, std::string &segment);
+  bool getChainTip(const KDL::Tree &tree, const std::vector<std::string> &segments, std::string chain_root, std::string &chain_tip);
 }
 
 #endif
