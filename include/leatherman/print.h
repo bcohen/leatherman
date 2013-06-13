@@ -1,4 +1,7 @@
-#include <ros/ros.h>
+#ifndef _LEATHERMAN_PRINT_
+#define _LEATHERMAN_PRINT_
+
+#include <ros/console.h>
 #include <vector>
 #include <string>
 #include <geometry_msgs/PoseStamped.h>
@@ -22,3 +25,4 @@ namespace leatherman
   void printKDLChain(const KDL::Chain &c, std::string text);
 }
 
+#endif

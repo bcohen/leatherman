@@ -1,7 +1,7 @@
 #ifndef _LEATHERMAN_UTILS_
 #define _LEATHERMAN_UTILS_
 
-#include <ros/ros.h>
+#include <ros/console.h>
 #include <iostream>
 #include <cstdlib>
 #include <vector>
