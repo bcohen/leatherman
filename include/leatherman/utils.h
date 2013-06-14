@@ -66,6 +66,8 @@ namespace leatherman
   bool getSegmentIndex(const KDL::Chain &c, std::string name, int &index);
   bool getSegmentOfJoint(const KDL::Tree &tree, std::string joint, std::string &segment);
   bool getChainTip(const KDL::Tree &tree, const std::vector<std::string> &segments, std::string chain_root, std::string &chain_tip);
+
+  void HSVtoRGB( double *r, double *g, double *b, double h, double s, double v);
 }
 
 #endif
