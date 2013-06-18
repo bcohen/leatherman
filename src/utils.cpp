@@ -639,4 +639,42 @@ void leatherman::HSVtoRGB( double *r, double *g, double *b, double h, double s, 
   }
 }
 
+void leatherman::setLoggerLevel(std::string package, std::string name, std::string level)
+{
+  ROSCONSOLE_AUTOINIT;
 
+  //std::string logger_name = ROSCONSOLE_DEFAULT_NAME + std::string(".") + name;
+  std::string logger_name = package + std::string(".") + name;
+
+  ROS_INFO("Setting %s to %s level", logger_name.c_str(), level.c_str());
+
+  log4cxx::LoggerPtr my_logger = log4cxx::Logger::getLogger(logger_name);
+
+  // Set the logger for this package to output all statements
+  if(level.compare("debug") == 0)
+    my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+  else
+    my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Info]);
+
+  ROS_DEBUG_NAMED(name, "This is a debug statement, and should print if you enabled debug.");
+}
+
+void leatherman::setLoggerLevel(std::string name, std::string level)
+{
+  ROSCONSOLE_AUTOINIT;
+
+  //std::string logger_name = ROSCONSOLE_DEFAULT_NAME + std::string(".") + name;
+  std::string logger_name = name;
+
+  ROS_INFO("Setting %s to %s level", logger_name.c_str(), level.c_str());
+
+  log4cxx::LoggerPtr my_logger = log4cxx::Logger::getLogger(logger_name);
+
+  // Set the logger for this package to output all statements
+  if(level.compare("debug") == 0)
+    my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+  else
+    my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Info]);
+
+  ROS_DEBUG_NAMED(name, "This is a debug statement, and should print if you enabled debug.");
+}

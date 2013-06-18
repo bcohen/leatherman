@@ -68,6 +68,9 @@ namespace leatherman
   bool getChainTip(const KDL::Tree &tree, const std::vector<std::string> &segments, std::string chain_root, std::string &chain_tip);
 
   void HSVtoRGB( double *r, double *g, double *b, double h, double s, double v);
+
+  void setLoggerLevel(std::string package, std::string name, std::string level);
+  void setLoggerLevel(std::string name, std::string level);
 }
 
 #endif
