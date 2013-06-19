@@ -505,6 +505,12 @@ bool leatherman::getJointPositions(const sensor_msgs::JointState &state, std::ve
   positions.resize(names.size());
   for(size_t i = 0; i < state.position.size(); ++i)
   {
+    if(state.name.size() < i)
+    {
+      ROS_ERROR("Not enough joint names in JointState message.");
+      return false;
+    }
+
     if(names[nind].compare(state.name[i]) == 0)
     {
       positions[nind] = state.position[i];
