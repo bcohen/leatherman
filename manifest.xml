@@ -18,6 +18,7 @@
   <depend package="geometric_shapes" />
   <depend package="trajectory_msgs" />
   <depend package="visualization_msgs" />
+  <depend package="arm_navigation_msgs" />
   <depend package="kdl" />
   <rosdep name="eigen" />
 
