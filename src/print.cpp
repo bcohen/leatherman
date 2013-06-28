@@ -75,6 +75,20 @@ void leatherman::printKDLFrame(const KDL::Frame &f, std::string text)
   ROS_INFO("[%s] xyz: %0.3f %0.3f %0.3f  rpy: %0.3f %0.3f %0.3f", text.c_str(), f.p[0], f.p[1], f.p[2], r, p, y);
 }
 
+void leatherman::printKDLFrames(const std::vector<std::vector<KDL::Frame> > &f, std::string text)
+{
+  double r,p,y;
+  for(size_t i = 0; i < f.size(); ++i)
+  {
+    for(size_t j = 0; j < f[i].size(); ++j)
+    {
+      f[i][j].M.GetRPY(r,p,y);
+      ROS_INFO("[%s] [%d %d]  xyz: %0.3f %0.3f %0.3f  rpy: %0.3f %0.3f %0.3f", text.c_str(), int(i), int(j), f[i][j].p.x(), f[i][j].p.y(), f[i][j].p.z(), r, p, y);
+    }
+  }
+}
+
+
 void leatherman::printKDLChain(const KDL::Chain &c, std::string text)
 {
   ROS_INFO("[%s] # segments: %d  # joints: %d", text.c_str(), c.getNrOfSegments(), c.getNrOfJoints());
