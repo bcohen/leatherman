@@ -1,4 +1,5 @@
 #include <leatherman/utils.h>
+#include <resource_retriever/retriever.h>
 
 #define SMALL_NUM  0.00000001     // to avoid division overflow
 
@@ -684,3 +685,48 @@ void leatherman::setLoggerLevel(std::string name, std::string level)
 
   ROS_DEBUG_NAMED(name, "This is a debug statement, and should print if you enabled debug.");
 }
+
+bool leatherman::getMeshComponentsFromResource(std::string resource, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices)
+{
+  bool retval = false;
+  shapes::Shape *mesh = NULL;
+
+  if(resource.empty())
+    return false;
+  
+  resource_retriever::Retriever retriever;
+  resource_retriever::MemoryResource res;
+  bool ok = true;
+
+  try
+  {
+    res = retriever.get(resource);
+  }
+  catch (resource_retriever::Exception& e)
+  {
+    ROS_ERROR("%s", e.what());
+    ok = false;
+  }
+
+  if (ok)
+  {
+    if (res.size == 0)
+      ROS_WARN("Retrieved empty mesh for resource '%s'", resource.c_str());
+    else
+    {
+      mesh = leatherman::createMeshFromBinaryStlData(reinterpret_cast<char*>(res.data.get()), res.size);
+      if (mesh == NULL)
+        ROS_ERROR("Failed to load mesh '%s'", resource.c_str());
+      else
+        retval = true;
+    }
+  }
+
+  if(retval)
+  {
+    shapes::Mesh* m = static_cast<shapes::Mesh*>(mesh);
+    leatherman::getMeshComponents(m, triangles, vertices);
+  }
+  return retval;
+}
+
