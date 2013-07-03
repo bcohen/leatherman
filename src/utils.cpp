@@ -438,6 +438,22 @@ void leatherman::transformEigenToKDL(const Eigen::Affine3d &e, KDL::Frame &k)
   k.M(2,2) = e(2,2);
 }
 
+void leatherman::poseMsgTobtTransform(const geometry_msgs::Pose &pose, btTransform &bt)
+{
+  bt.setRotation(btQuaternion(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w));
+  bt.setOrigin(btVector3(pose.position.x, pose.position.y, pose.position.z));
+}
+void leatherman::btTransformToPoseMsg(const btTransform &bt, geometry_msgs::Pose &pose)
+{
+  pose.position.x = bt.getOrigin().getX();
+  pose.position.y = bt.getOrigin().getY();
+  pose.position.z = bt.getOrigin().getZ();
+  pose.orientation.x = bt.getRotation().x();
+  pose.orientation.y = bt.getRotation().y();
+  pose.orientation.z = bt.getRotation().z();
+  pose.orientation.w = bt.getRotation().w();
+}
+
 double leatherman::distance(const KDL::Vector &a, const KDL::Vector &b)
 {
   return sqrt((a.x()-b.x())*(a.x()-b.x()) + (a.y()-b.y())*(a.y()-b.y()) + (a.z()-b.z())*(a.z()-b.z()));
@@ -728,5 +744,51 @@ bool leatherman::getMeshComponentsFromResource(std::string resource, std::vector
     leatherman::getMeshComponents(m, triangles, vertices);
   }
   return retval;
+}
+
+bool leatherman::getPose(const arm_navigation_msgs::MultiDOFJointState &state, std::string frame_id, std::string child_frame_id, geometry_msgs::Pose &pose)
+{
+  if(state.frame_ids.size() != state.child_frame_ids.size())
+    return false;
+
+  for(size_t i = 0; i < state.frame_ids.size(); ++i)
+  {
+    if(state.frame_ids[i].compare(frame_id) == 0)
+    {
+      if(state.child_frame_ids[i].compare(child_frame_id) == 0)
+      {
+        pose = state.poses[i];
+        return true;
+      }
+    }
+  }
+
+  // look for inverse
+  for(size_t i = 0; i < state.frame_ids.size(); ++i)
+  {
+    if(state.child_frame_ids[i].compare(frame_id) == 0)
+    {
+      if(state.frame_ids[i].compare(child_frame_id) == 0)
+      {
+        btTransform bt;
+        leatherman::poseMsgTobtTransform(state.poses[i], bt);
+        leatherman::btTransformToPoseMsg(bt.inverse(), pose);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool leatherman::getFrame(const arm_navigation_msgs::MultiDOFJointState &state, std::string frame_id, std::string child_frame_id, KDL::Frame &frame)
+{
+  geometry_msgs::Pose p;
+  if(!getPose(state, frame_id, child_frame_id, p))
+    return false;
+
+  Eigen::Affine3d t;
+  leatherman::poseFromMsg(p, t);
+  leatherman::transformEigenToKDL(t, frame);
+  return true;
 }
 

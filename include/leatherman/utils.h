@@ -19,6 +19,7 @@
 #include <kdl/tree.hpp>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
+#include <arm_navigation_msgs/MultiDOFJointState.h>
 
 namespace leatherman
 {
@@ -33,6 +34,8 @@ namespace leatherman
   void rpyToQuatMsg(double r, double p, double y, geometry_msgs::Quaternion &q);
   void transformKDLToEigen(const KDL::Frame &k, Eigen::Affine3d &e);
   void transformEigenToKDL(const Eigen::Affine3d &e, KDL::Frame &k);
+  void btTransformToPoseMsg(const btTransform &bt, geometry_msgs::Pose &pose);
+  void poseMsgTobtTransform(const geometry_msgs::Pose &pose, btTransform &bt);
 
   double getYaw(const geometry_msgs::Quaternion &q);
   void setRPY(double roll, double pitch, double yaw, Eigen::Matrix3d &m);
@@ -63,6 +66,8 @@ namespace leatherman
   /* Search (string comparisons) */
   bool findJointPosition(const sensor_msgs::JointState &state, std::string name, double &position);
   bool getJointPositions(const sensor_msgs::JointState &state, std::vector<std::string> &names, std::vector<double> &positions);
+  bool getPose(const arm_navigation_msgs::MultiDOFJointState &state, std::string frame_id, std::string child_frame_id, geometry_msgs::Pose &pose);
+  bool getFrame(const arm_navigation_msgs::MultiDOFJointState &state, std::string frame_id, std::string child_frame_id, KDL::Frame &frame);
   bool getJointIndex(const KDL::Chain &c, std::string name, int &index);
   bool getSegmentIndex(const KDL::Chain &c, std::string name, int &index);
   bool getSegmentOfJoint(const KDL::Tree &tree, std::string joint, std::string &segment);
