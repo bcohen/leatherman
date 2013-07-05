@@ -17,6 +17,7 @@
 #include <kdl/frames.hpp>
 #include <kdl/chain.hpp>
 #include <kdl/tree.hpp>
+#include <urdf/model.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
 #include <arm_navigation_msgs/MultiDOFJointState.h>
@@ -72,6 +73,9 @@ namespace leatherman
   bool getSegmentIndex(const KDL::Chain &c, std::string name, int &index);
   bool getSegmentOfJoint(const KDL::Tree &tree, std::string joint, std::string &segment);
   bool getChainTip(const KDL::Tree &tree, const std::vector<std::string> &segments, std::string chain_root, std::string &chain_tip);
+
+  bool getJointLimits(const urdf::Model *urdf, std::string root_name, std::string tip_name, std::vector<std::string> &joint_names, std::vector<double> &min_limits, std::vector<double> &max_limits, std::vector<bool> &continuous);
+  bool getJointLimits(const urdf::Model *urdf, std::string root_name, std::string tip_name, std::string joint_name, double &min_limit, double &max_limit, bool &continuous);
 
   void HSVtoRGB( double *r, double *g, double *b, double h, double s, double v);
 

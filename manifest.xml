@@ -20,6 +20,7 @@
   <depend package="visualization_msgs" />
   <depend package="arm_navigation_msgs" />
   <depend package="kdl" />
+  <depend package="urdf" />
   <rosdep name="eigen" />
 
   <export>

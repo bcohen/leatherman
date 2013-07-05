@@ -22,5 +22,5 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #common commands for building c++ executables and libraries
-rosbuild_add_library(${PROJECT_NAME} src/utils.cpp src/print.cpp src/file.cpp src/viz.cpp)
+rosbuild_add_library(${PROJECT_NAME} src/utils.cpp src/print.cpp src/file.cpp src/viz.cpp src/bresenham)
 
