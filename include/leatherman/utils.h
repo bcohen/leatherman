@@ -9,7 +9,9 @@
 #include <geometric_shapes/shape_operations.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Pose.h>
-#include <LinearMath/btVector3.h>
+#include <tf/LinearMath/Vector3.h>
+#include <tf/LinearMath/Transform.h>
+#include <tf/LinearMath/Scalar.h>
 #include <tf/transform_datatypes.h>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -35,18 +37,21 @@ namespace leatherman
   void rpyToQuatMsg(double r, double p, double y, geometry_msgs::Quaternion &q);
   void transformKDLToEigen(const KDL::Frame &k, Eigen::Affine3d &e);
   void transformEigenToKDL(const Eigen::Affine3d &e, KDL::Frame &k);
-  void btTransformToPoseMsg(const btTransform &bt, geometry_msgs::Pose &pose);
-  void poseMsgTobtTransform(const geometry_msgs::Pose &pose, btTransform &bt);
+  void btTransformToPoseMsg(const tf::Transform &bt, geometry_msgs::Pose &pose);
+  void poseMsgTobtTransform(const geometry_msgs::Pose &pose, tf::Transform &bt);
+  void tfVector3ToEigen(const tf::Vector3 &bt, Eigen::Vector3d &e);
 
   double getYaw(const geometry_msgs::Quaternion &q);
   void setRPY(double roll, double pitch, double yaw, Eigen::Matrix3d &m);
   void getRPY(const Eigen::Matrix3d &m, double &roll, double &pitch, double &yaw);
   void getRPY(const geometry_msgs::Quaternion &qmsg, double &roll, double &pitch, double &yaw);
-  btQuaternion setRPY(const btScalar& roll, const btScalar& pitch, const btScalar& yaw);
+  tf::Quaternion setRPY(const tfScalar& roll, const tfScalar& pitch, const tfScalar& yaw);
 
   /* Geometry */
   double distance(const KDL::Vector &a, const KDL::Vector &b);
   double distance(const Eigen::Vector3d &a, const Eigen::Vector3d &b);
+  double distance(double &x1, double &y1, double &z1, double &x2, double &y2, double &z2);
+  double distance(const std::vector<int> &a, const std::vector<int> &b);
   double distanceBetween3DLineSegments(std::vector<int> l1a, std::vector<int> l1b,std::vector<int> l2a,std::vector<int> l2b);
   void getIntermediatePoints(Eigen::Vector3d a, Eigen::Vector3d b, double d, std::vector<Eigen::Vector3d> &points);
   void getIntermediatePoints(KDL::Vector a, KDL::Vector b, double d, std::vector<KDL::Vector> &points);

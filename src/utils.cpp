@@ -122,9 +122,9 @@ shapes::Mesh* leatherman::createMeshFromBinaryStlData(const char *data, unsigned
       pos += 12;
 
       // read vertices 
-      btVector3 v1(0,0,0);
-      btVector3 v2(0,0,0);
-      btVector3 v3(0,0,0);
+      tf::Vector3 v1(0,0,0);
+      tf::Vector3 v2(0,0,0);
+      tf::Vector3 v3(0,0,0);
 
       v1.setX(*(float*)pos);
       pos += 4;
@@ -216,7 +216,7 @@ void leatherman::poseVectorToPoseMsg(const std::vector<double> &pose, geometry_m
     ROS_ERROR("Pose must have 6 elements. Cannot convert pose to pose message.");
   else
   {
-    btQuaternion btpose;
+    tf::Quaternion btpose;
     pose_msg.position.x = pose[0];
     pose_msg.position.y = pose[1];
     pose_msg.position.z = pose[2];
@@ -227,7 +227,7 @@ void leatherman::poseVectorToPoseMsg(const std::vector<double> &pose, geometry_m
 
 void leatherman::rpyToQuatMsg(double r, double p, double y, geometry_msgs::Quaternion &q)
 {
-  btQuaternion btpose;
+  tf::Quaternion btpose;
   btpose = setRPY(r, p, y);
   tf::quaternionTFToMsg(btpose, q);
 }
@@ -368,18 +368,18 @@ bool leatherman::getIntermediatePoints(trajectory_msgs::JointTrajectoryPoint a, 
   return true; 
 } 
 
-btQuaternion leatherman::setRPY(const btScalar& roll, const btScalar& pitch, const btScalar& yaw)
+tf::Quaternion leatherman::setRPY(const tfScalar& roll, const tfScalar& pitch, const tfScalar& yaw)
 {
-  btScalar halfYaw = btScalar(yaw) * btScalar(0.5);
-  btScalar halfPitch = btScalar(pitch) * btScalar(0.5);
-  btScalar halfRoll = btScalar(roll) * btScalar(0.5);
-  btScalar cosYaw = btCos(halfYaw);
-  btScalar sinYaw = btSin(halfYaw);
-  btScalar cosPitch = btCos(halfPitch);
-  btScalar sinPitch = btSin(halfPitch);
-  btScalar cosRoll = btCos(halfRoll);
-  btScalar sinRoll = btSin(halfRoll);
-  btQuaternion q;
+  tfScalar halfYaw = tfScalar(yaw) * tfScalar(0.5);
+  tfScalar halfPitch = tfScalar(pitch) * tfScalar(0.5);
+  tfScalar halfRoll = tfScalar(roll) * tfScalar(0.5);
+  tfScalar cosYaw = tfCos(halfYaw);
+  tfScalar sinYaw = tfSin(halfYaw);
+  tfScalar cosPitch = tfCos(halfPitch);
+  tfScalar sinPitch = tfSin(halfPitch);
+  tfScalar cosRoll = tfCos(halfRoll);
+  tfScalar sinRoll = tfSin(halfRoll);
+  tf::Quaternion q;
   q.setValue(sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw, //x
       cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw, //y
       cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw, //z
@@ -397,6 +397,11 @@ void leatherman::getRPY(const Eigen::Matrix3d &m, double &roll, double &pitch, d
 {
   Eigen::Vector3d v = m.eulerAngles(0,1,2);
   roll = v(0);  pitch = v(1);  yaw = v(2);
+}
+
+void leatherman::tfVector3ToEigen(const tf::Vector3 &bt, Eigen::Vector3d &e)
+{
+  e(0) = bt.x(); e(1) = bt.y(); e(2) = bt.z();
 }
 
 void leatherman::transformKDLToEigen(const KDL::Frame &k, Eigen::Affine3d &e)
@@ -438,12 +443,12 @@ void leatherman::transformEigenToKDL(const Eigen::Affine3d &e, KDL::Frame &k)
   k.M(2,2) = e(2,2);
 }
 
-void leatherman::poseMsgTobtTransform(const geometry_msgs::Pose &pose, btTransform &bt)
+void leatherman::poseMsgTobtTransform(const geometry_msgs::Pose &pose, tf::Transform &bt)
 {
-  bt.setRotation(btQuaternion(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w));
-  bt.setOrigin(btVector3(pose.position.x, pose.position.y, pose.position.z));
+  bt.setRotation(tf::Quaternion(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w));
+  bt.setOrigin(tf::Vector3(pose.position.x, pose.position.y, pose.position.z));
 }
-void leatherman::btTransformToPoseMsg(const btTransform &bt, geometry_msgs::Pose &pose)
+void leatherman::btTransformToPoseMsg(const tf::Transform &bt, geometry_msgs::Pose &pose)
 {
   pose.position.x = bt.getOrigin().getX();
   pose.position.y = bt.getOrigin().getY();
@@ -462,6 +467,19 @@ double leatherman::distance(const KDL::Vector &a, const KDL::Vector &b)
 double leatherman::distance(const Eigen::Vector3d &a, const Eigen::Vector3d &b)
 {
   return sqrt((a(0)-b(0))*(a(0)-b(0)) + (a(1)-b(1))*(a(1)-b(1)) + (a(2)-b(2))*(a(2)-b(2)));
+}
+
+double leatherman::distance(double &x1, double &y1, double &z1, double &x2, double &y2, double &z2)
+{
+  return sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2));
+}
+
+double leatherman::distance(const std::vector<int> &a, const std::vector<int> &b)
+{
+  if((a.size() != 3) || (b.size() != 3))
+    return -10000;
+
+  return sqrt(((a[0]-b[0]))*(a[0]-b[0]) + ((a[1]-b[1]))*(a[1]-b[1]) + ((a[2]-b[2]))*(a[2]-b[2]));
 }
 
 void leatherman::getIntermediatePoints(Eigen::Vector3d a, Eigen::Vector3d b, double d, std::vector<Eigen::Vector3d> &points)
@@ -497,7 +515,7 @@ void leatherman::getIntermediatePoints(KDL::Vector a, KDL::Vector b, double d, s
   points.push_back(a);
   for(int i = 1; i <= interm_points; ++i)
   {
-    pt = a + dir*i*d;
+    pt = a + dir * i * d;
     points.push_back(pt);
   }
   points.push_back(b);
@@ -751,6 +769,15 @@ bool leatherman::getPose(const arm_navigation_msgs::MultiDOFJointState &state, s
   if(state.frame_ids.size() != state.child_frame_ids.size())
     return false;
 
+  if(frame_id.compare(child_frame_id) == 0)
+  {
+    pose.position.x = 0; 
+    pose.position.y = 0; 
+    pose.position.z = 0;
+    pose.orientation.w = 1;
+    return true;
+  }
+
   for(size_t i = 0; i < state.frame_ids.size(); ++i)
   {
     if(state.frame_ids[i].compare(frame_id) == 0)
@@ -770,7 +797,7 @@ bool leatherman::getPose(const arm_navigation_msgs::MultiDOFJointState &state, s
     {
       if(state.frame_ids[i].compare(child_frame_id) == 0)
       {
-        btTransform bt;
+        tf::Transform bt;
         leatherman::poseMsgTobtTransform(state.poses[i], bt);
         leatherman::btTransformToPoseMsg(bt.inverse(), pose);
         return true;
