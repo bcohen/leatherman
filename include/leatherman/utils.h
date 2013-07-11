@@ -45,6 +45,7 @@ namespace leatherman
   void setRPY(double roll, double pitch, double yaw, Eigen::Matrix3d &m);
   void getRPY(const Eigen::Matrix3d &m, double &roll, double &pitch, double &yaw);
   void getRPY(const geometry_msgs::Quaternion &qmsg, double &roll, double &pitch, double &yaw);
+  void getRPY(const std::vector<std::vector<double> > &Rot, double* roll, double* pitch, double* yaw, int solution_number);
   tf::Quaternion setRPY(const tfScalar& roll, const tfScalar& pitch, const tfScalar& yaw);
 
   /* Geometry */
