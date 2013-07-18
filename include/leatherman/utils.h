@@ -6,7 +6,8 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
-#include <geometric_shapes/shape_operations.h>
+//#include <geometric_shapes/shape_operations.h>
+#include <geometric_shapes/mesh_operations.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Pose.h>
 #include <tf/LinearMath/Vector3.h>
@@ -63,6 +64,7 @@ namespace leatherman
   shapes::Mesh* createMeshFromBinaryStlData(const char *data, unsigned int size);
   void getMeshComponents(shapes::Mesh* mesh, std::vector<int> &triangles, std::vector<geometry_msgs::Point> &vertices);
   bool getMeshComponentsFromResource(std::string resource, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices);
+  bool getMeshComponentsFromResource(std::string resource, geometry_msgs::Vector3 &scale, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices);
 
   /* Math */
   void multiplyPoses(geometry_msgs::Pose &p1, geometry_msgs::Pose &p2, geometry_msgs::Pose &p);

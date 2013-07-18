@@ -1,4 +1,5 @@
 #include <leatherman/utils.h>
+//#include <geometric_shapes/mesh_operations.h>
 #include <resource_retriever/retriever.h>
 
 #define SMALL_NUM  0.00000001     // to avoid division overflow
@@ -103,6 +104,7 @@ double leatherman::distanceBetween3DLineSegments(std::vector<int> l1a, std::vect
  * was moved to pr2_navigation/load_mesh.cpp
  * Written by Ioan Sucan */
 
+/*
 shapes::Mesh* leatherman::createMeshFromBinaryStlData(const char *data, unsigned int size)
 {
   const char* pos = data;
@@ -185,14 +187,15 @@ shapes::Mesh* leatherman::createMeshFromBinaryStl(const char *filename)
 
   return result;
 }
+*/
 
 void leatherman::getMeshComponents(shapes::Mesh* mesh, std::vector<int> &triangles, std::vector<geometry_msgs::Point> &vertices)
 {
   geometry_msgs::Point v;
 
   // copy vertices
-  printf("vertexCount: %d    triangleCount: %d\n", mesh->vertexCount, mesh->triangleCount); fflush(stdout);
-  for (unsigned int i = 0 ; i < mesh->vertexCount; ++i)
+  printf("vertexCount: %d    triangleCount: %d\n", mesh->vertex_count, mesh->triangle_count); fflush(stdout);
+  for (unsigned int i = 0 ; i < mesh->vertex_count; ++i)
   {
     v.x = mesh->vertices[3 * i    ];
     v.y = mesh->vertices[3 * i + 1];
@@ -201,8 +204,8 @@ void leatherman::getMeshComponents(shapes::Mesh* mesh, std::vector<int> &triangl
   }
 
   // copy triangles
-  triangles.resize(mesh->triangleCount*3);
-  for (unsigned int i = 0 ; i < mesh->triangleCount; ++i)
+  triangles.resize(mesh->triangle_count*3);
+  for (unsigned int i = 0 ; i < mesh->triangle_count; ++i)
   {
     triangles[3 * i    ] = mesh->triangles[3 * i    ];
     triangles[3 * i + 1] = mesh->triangles[3 * i + 1];
@@ -720,6 +723,7 @@ void leatherman::setLoggerLevel(std::string name, std::string level)
   ROS_DEBUG_NAMED(name, "This is a debug statement, and should print if you enabled debug.");
 }
 
+/*
 bool leatherman::getMeshComponentsFromResource(std::string resource, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices)
 {
   bool retval = false;
@@ -748,7 +752,8 @@ bool leatherman::getMeshComponentsFromResource(std::string resource, std::vector
       ROS_WARN("Retrieved empty mesh for resource '%s'", resource.c_str());
     else
     {
-      mesh = leatherman::createMeshFromBinaryStlData(reinterpret_cast<char*>(res.data.get()), res.size);
+      //mesh = leatherman::createMeshFromBinaryStlData(reinterpret_cast<char*>(res.data.get()), res.size);
+      mesh = shapes::createMeshFromResource(resource);
       if (mesh == NULL)
         ROS_ERROR("Failed to load mesh '%s'", resource.c_str());
       else
@@ -763,6 +768,7 @@ bool leatherman::getMeshComponentsFromResource(std::string resource, std::vector
   }
   return retval;
 }
+*/
 
 bool leatherman::getPose(const arm_navigation_msgs::MultiDOFJointState &state, std::string frame_id, std::string child_frame_id, geometry_msgs::Pose &pose)
 {
@@ -989,4 +995,29 @@ void leatherman::getRPY(const std::vector<std::vector<double> > &Rot, double* ro
     *roll = rpy2[0];
   }
 }
+
+
+bool leatherman::getMeshComponentsFromResource(std::string resource, geometry_msgs::Vector3 &scale, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices)
+{
+  bool retval = false;
+  shapes::Shape *mesh = NULL;
+  Eigen::Vector3d s(scale.x, scale.y, scale.z);
+
+  if(resource.empty())
+    return false;
+ 
+  mesh = shapes::createMeshFromResource(resource, s);
+  if (mesh == NULL)
+    ROS_ERROR("Failed to load mesh '%s'", resource.c_str());
+  else
+    retval = true;
+
+  if(retval)
+  {
+    shapes::Mesh* m = static_cast<shapes::Mesh*>(mesh);
+    leatherman::getMeshComponents(m, triangles, vertices);
+  }
+  return retval;
+}
+
 
