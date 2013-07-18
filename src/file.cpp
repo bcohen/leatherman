@@ -57,3 +57,44 @@ bool leatherman::writeJointTrajectoryToFile(FILE** file, const trajectory_msgs::
   return true;
 }
 
+bool leatherman::writePointsToFile(std::string filename, const std::vector<Eigen::Vector3d> &pts)
+{
+  FILE* f = NULL;
+  if((f=fopen(filename.c_str(),"a")) == NULL)
+  {
+    ROS_ERROR("Failed to open file for writing. {%s}", filename.c_str());
+    return false;
+  }
+  
+  for(size_t i = 0; i < pts.size(); ++i)
+    fprintf(f, "%1.4f, %1.4f, %1.4f\n", pts[i].x(), pts[i].y(), pts[i].z());
+   
+  fflush(f);
+  return true;
+}
+
+bool leatherman::readPointsInFile(std::string filename, std::vector<Eigen::Vector3d> &pts)
+{
+  FILE* f = NULL;
+  if((f=fopen(filename.c_str(),"r")) == NULL)
+  {
+    ROS_ERROR("Failed to open file for writing. {%s}", filename.c_str());
+    return false;
+  }
+ 
+  Eigen::Vector3d v;
+  float x,y,z;
+  while(!feof(f))
+  {
+    if(fscanf(f,"%f, %f, %f\n", &x, &y, &z) < 1)
+    {
+      ROS_ERROR("Error while parsing list of points.");
+      return false;
+    }
+    pts.push_back(Eigen::Vector3d(x, y, z));
+  }
+
+  fclose(f);
+  return true;
+}
+
