@@ -1,3 +1,5 @@
+/* \author Benjamin Cohen */
+
 #ifndef _LEATHERMAN_UTILS_
 #define _LEATHERMAN_UTILS_
 
@@ -6,7 +8,6 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
-//#include <geometric_shapes/shape_operations.h>
 #include <geometric_shapes/mesh_operations.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Pose.h>
@@ -82,11 +83,14 @@ namespace leatherman
   bool getSegmentOfJoint(const KDL::Tree &tree, std::string joint, std::string &segment);
   bool getChainTip(const KDL::Tree &tree, const std::vector<std::string> &segments, std::string chain_root, std::string &chain_tip);
 
+  /* Joint Limits */
   bool getJointLimits(const urdf::Model *urdf, std::string root_name, std::string tip_name, std::vector<std::string> &joint_names, std::vector<double> &min_limits, std::vector<double> &max_limits, std::vector<bool> &continuous);
   bool getJointLimits(const urdf::Model *urdf, std::string root_name, std::string tip_name, std::string joint_name, double &min_limit, double &max_limit, bool &continuous);
 
+  /* Colors */
   void HSVtoRGB( double *r, double *g, double *b, double h, double s, double v);
 
+  /* ROS Logging */
   void setLoggerLevel(std::string package, std::string name, std::string level);
   void setLoggerLevel(std::string name, std::string level);
 }

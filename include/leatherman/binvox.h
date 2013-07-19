@@ -1,10 +1,19 @@
+/* 
+ * For reading in Binvox files. (http://www.cs.princeton.edu/~min/binvox/)
+ * Binvox is a tool that reads in a mesh file and outputs a voxelized
+ * version of it.
+ *  * Ubuntu 12.04 and up (GLIBC 2.14):
+ *    http://www.cs.princeton.edu/~min/binvox/linux64/binvox?rnd=137424032048747
+ * Ubuntu 11.10 and earlier (GLIBC 2.13):
+ *    http://www.cs.princeton.edu/~min/binvox/linux64b/binvox
+*/
+
 #include <cstdlib>
 #include <memory>
 #include <string>
 #include <utility>
 #include <fstream>
 #include <iostream>
-
 #include <ros/ros.h>
 #include <geometry_msgs/Point32.h>
 #include <sensor_msgs/PointCloud.h>
