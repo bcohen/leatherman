@@ -98,3 +98,75 @@ bool leatherman::readPointsInFile(std::string filename, std::vector<Eigen::Vecto
   return true;
 }
 
+std::string leatherman::getFilenameFromPath(std::string path, bool remove_extension)
+{
+  std::string filename;
+  size_t pos = path.find_last_of("/");
+  if(pos != std::string::npos)
+    filename.assign(path.begin() + pos + 1, path.end());
+  else
+    filename = path;
+
+  if(remove_extension)
+  {
+    pos = filename.find_last_of(".");
+    if(pos != std::string::npos)
+      filename.assign(filename.begin(),  filename.begin() + pos);
+  }
+  return filename;
+}
+
+std::string leatherman::getPathWithoutFilename(std::string path)
+{
+  // keeps final "/"
+
+  std::string filename;
+  size_t pos = path.find_last_of("/");
+  if(pos != std::string::npos)
+    filename.assign(path.begin(), path.begin()+pos+1);
+  else
+    filename = path;
+
+  return filename;
+}
+
+bool leatherman::getSystemPathFromROSPath(std::string ros_path, std::string &system_path)
+{
+  std::string rp = ros_path;
+  std::string pn, apn;
+  
+  // remove 'package://'
+  size_t pos = rp.find_first_of("package://");
+  if(pos != std::string::npos)
+    rp.erase(pos, 10);
+  else
+  {
+    ROS_ERROR("Not a ROS package path. (Failed to find 'package://')");
+    return false;
+  } 
+  
+  // get package name
+  pos = rp.find_first_of("/");
+  if(pos != std::string::npos)
+  { 
+    pn.assign(rp.begin(), rp.begin() + pos);
+    apn.assign(rp.begin() + pos + 1, rp.end());
+  }
+  else
+  { 
+    ROS_ERROR("No slash found when searching for package name.");
+    return false;
+  }
+  
+  // get package path
+  std::string package_path = ros::package::getPath(pn);
+  if(package_path.empty())
+  { 
+    ROS_ERROR("Failed to get system path for package '%s'", pn.c_str());
+    return false;
+  }
+  
+  system_path = package_path + "/" + apn;
+  return true;
+}
+

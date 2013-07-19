@@ -1020,4 +1020,3 @@ bool leatherman::getMeshComponentsFromResource(std::string resource, geometry_ms
   return retval;
 }
 
-
