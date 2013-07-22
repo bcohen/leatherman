@@ -66,6 +66,7 @@ namespace leatherman
   void getMeshComponents(shapes::Mesh* mesh, std::vector<int> &triangles, std::vector<geometry_msgs::Point> &vertices);
   bool getMeshComponentsFromResource(std::string resource, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices);
   bool getMeshComponentsFromResource(std::string resource, geometry_msgs::Vector3 &scale, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices);
+  void scaleVertices(const std::vector<Eigen::Vector3d> &vin, double sx, double sy, double sz, std::vector<Eigen::Vector3d> &vout);
 
   /* Math */
   void multiplyPoses(geometry_msgs::Pose &p1, geometry_msgs::Pose &p2, geometry_msgs::Pose &p);

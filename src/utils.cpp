@@ -996,7 +996,6 @@ void leatherman::getRPY(const std::vector<std::vector<double> > &Rot, double* ro
   }
 }
 
-
 bool leatherman::getMeshComponentsFromResource(std::string resource, geometry_msgs::Vector3 &scale, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices)
 {
   bool retval = false;
@@ -1018,5 +1017,35 @@ bool leatherman::getMeshComponentsFromResource(std::string resource, geometry_ms
     leatherman::getMeshComponents(m, triangles, vertices);
   }
   return retval;
+}
+
+void leatherman::scaleVertices(const std::vector<Eigen::Vector3d> &vin, double sx, double sy, double sz, std::vector<Eigen::Vector3d> &vout)
+{
+  // find the mean of the points
+  Eigen::Vector3d mean;
+  double sumx = 0, sumy = 0, sumz = 0;
+  for(size_t i = 0; i < vin.size(); ++i)
+  {
+    sumx += vin[i].x();
+    sumy += vin[i].y();
+    sumz += vin[i].z();
+  }
+  mean(0) = sumx / double(vin.size()); 
+  mean(1) = sumy / double(vin.size());
+  mean(2) = sumz / double(vin.size());
+  
+  //Eigen::Affine3d scale(Eigen::Translation3d(sx, sy, sz) * Eigen::Affine3d::Identity());
+  //Eigen::Vector3d scale(sx, sy, sz);
+
+  // subtract mean and then scale
+  vout.resize(vin.size());
+  for(size_t i = 0; i < vin.size(); ++i)
+  {
+    vout[i](0) = (vin[i] - mean)(0) * sx;
+    vout[i](1) = (vin[i] - mean)(1) * sy;
+    vout[i](2) = (vin[i] - mean)(2) * sz;
+
+    vout[i] += mean;
+  }
 }
 
