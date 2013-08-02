@@ -1,4 +1,5 @@
 #include <leatherman/file.h>
+#include <algorithm>
 
 bool leatherman::createFolder(std::string name)
 {
@@ -70,6 +71,7 @@ bool leatherman::writePointsToFile(std::string filename, const std::vector<Eigen
     fprintf(f, "%1.4f, %1.4f, %1.4f\n", pts[i].x(), pts[i].y(), pts[i].z());
    
   fflush(f);
+  fclose(f);
   return true;
 }
 
@@ -128,6 +130,29 @@ std::string leatherman::getPathWithoutFilename(std::string path)
     filename = path;
 
   return filename;
+}
+
+std::string leatherman::getExtension(std::string filename)
+{
+  std::string ext="";
+  std::size_t pos = filename.find_last_of(".");
+  if (pos != std::string::npos)
+  {
+    ext = filename.substr(pos + 1);
+    std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+  }
+  return ext;
+}
+
+std::string leatherman::replaceExtension(std::string filename, std::string extension)
+{ 
+  std::string output="";
+  std::size_t pos = filename.find_last_of(".");
+
+  if (pos != std::string::npos)
+    output = filename.replace(filename.begin()+pos+1, filename.end(), extension);
+  
+  return output;
 }
 
 bool leatherman::getSystemPathFromROSPath(std::string ros_path, std::string &system_path)

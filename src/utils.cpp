@@ -1,6 +1,7 @@
 #include <leatherman/utils.h>
 //#include <geometric_shapes/mesh_operations.h>
 #include <resource_retriever/retriever.h>
+#include <tinyxml.h>
 
 #define SMALL_NUM  0.00000001     // to avoid division overflow
 
@@ -194,12 +195,13 @@ void leatherman::getMeshComponents(shapes::Mesh* mesh, std::vector<int> &triangl
   geometry_msgs::Point v;
 
   // copy vertices
-  printf("vertexCount: %d    triangleCount: %d\n", mesh->vertex_count, mesh->triangle_count); fflush(stdout);
+  ROS_INFO("vertexCount: %d    triangleCount: %d", mesh->vertex_count, mesh->triangle_count); fflush(stdout);
   for (unsigned int i = 0 ; i < mesh->vertex_count; ++i)
   {
     v.x = mesh->vertices[3 * i    ];
     v.y = mesh->vertices[3 * i + 1];
     v.z = mesh->vertices[3 * i + 2];
+    ROS_DEBUG("[vertex %d]  xyz: %0.3f %0.3f %0.3f", int(i), v.x, v.y, v.z);
     vertices.push_back(v);
   }
 
@@ -996,7 +998,7 @@ void leatherman::getRPY(const std::vector<std::vector<double> > &Rot, double* ro
   }
 }
 
-bool leatherman::getMeshComponentsFromResource(std::string resource, geometry_msgs::Vector3 &scale, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices)
+bool leatherman::getMeshComponentsFromResource(std::string resource, const geometry_msgs::Vector3 &scale, std::vector<int32_t> &triangles, std::vector<geometry_msgs::Point> &vertices)
 {
   bool retval = false;
   shapes::Shape *mesh = NULL;
@@ -1047,5 +1049,77 @@ void leatherman::scaleVertices(const std::vector<Eigen::Vector3d> &vin, double s
 
     vout[i] += mean;
   }
+}
+
+void leatherman::scaleVertices(const std::vector<geometry_msgs::Point> &vin, double sx, double sy, double sz, std::vector<geometry_msgs::Point> &vout)
+{
+  std::vector<Eigen::Vector3d> evin(vin.size()), evout;
+  for(size_t p = 0; p < vin.size(); ++p)
+  {
+    evin[p](0) = vin[p].x;
+    evin[p](1) = vin[p].y;
+    evin[p](2) = vin[p].z;
+  }
+
+  scaleVertices(evin, sx, sy, sz, evout);
+
+  vout.resize(evout.size());
+  for(size_t p = 0; p < evout.size(); ++p)
+  {
+    vout[p].x = evout[p](0);
+    vout[p].y = evout[p](1);
+    vout[p].z = evout[p](2);
+  }
+}
+
+double leatherman::getColladaFileScale(std::string resource)
+{
+  static std::map<std::string, float> rescale_cache;
+
+  // Try to read unit to meter conversion ratio from mesh. Only valid in Collada XML formats. 
+  TiXmlDocument xmlDoc;
+  float unit_scale(1.0);
+  resource_retriever::Retriever retriever;
+  resource_retriever::MemoryResource res;
+  try
+  {
+    res = retriever.get(resource);
+  }
+  catch (resource_retriever::Exception& e)
+  {
+    ROS_ERROR("%s", e.what());
+    return unit_scale;
+  }
+
+  if (res.size == 0)
+  {
+    return unit_scale;
+  }
+
+
+  // Use the resource retriever to get the data.
+  const char * data = reinterpret_cast<const char * > (res.data.get());
+  xmlDoc.Parse(data);
+
+  // Find the appropriate element if it exists
+  if(!xmlDoc.Error())
+  {
+    TiXmlElement * colladaXml = xmlDoc.FirstChildElement("COLLADA");
+    if(colladaXml)
+    {
+      TiXmlElement *assetXml = colladaXml->FirstChildElement("asset");
+      if(assetXml)
+      {
+        TiXmlElement *unitXml = assetXml->FirstChildElement("unit");
+        if (unitXml && unitXml->Attribute("meter"))
+        {
+          // Failing to convert leaves unit_scale as the default.
+          if(unitXml->QueryFloatAttribute("meter", &unit_scale) != 0)
+            ROS_WARN_STREAM("getMeshUnitRescale::Failed to convert unit element meter attribute to determine scaling. unit element: " << *unitXml);
+        }
+      }
+    }
+  }
+  return unit_scale;
 }
 

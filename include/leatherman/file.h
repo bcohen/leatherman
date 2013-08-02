@@ -23,6 +23,10 @@ namespace leatherman
 
   std::string getPathWithoutFilename(std::string path);
 
+  std::string getExtension(std::string filename);
+
+  std::string replaceExtension(std::string filename, std::string extension);
+
   bool getSystemPathFromROSPath(std::string ros_path, std::string &system_path);
 }
 
