@@ -8,10 +8,15 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <ros/package.h>
+#include <unistd.h>
 
 namespace leatherman
 {
+  std::string getTime();
+
   bool createFolder(std::string name);
+
+  bool getFolderContents(std::string folder_name, std::vector<std::string>& files);
 
   bool writeJointTrajectoryToFile(FILE** file, const trajectory_msgs::JointTrajectory &traj);
 

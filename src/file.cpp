@@ -1,6 +1,11 @@
 #include <leatherman/file.h>
 #include <algorithm>
 
+bool compare(std::string a, std::string b)
+{
+  return (a.compare(b) < 0);
+}
+
 bool leatherman::createFolder(std::string name)
 {
   struct stat st;
@@ -56,6 +61,37 @@ bool leatherman::writeJointTrajectoryToFile(FILE** file, const trajectory_msgs::
       
   fflush(*file);
   return true;
+}
+
+bool leatherman::getFolderContents(std::string folder_name, std::vector<std::string>& files)
+{
+  DIR *dp;
+  struct dirent *dirp;
+  if((dp  = opendir(folder_name.c_str())) == NULL)
+  {
+    ROS_ERROR("Error opening folder {%s}", folder_name.c_str());
+    return false;
+  }
+
+  while ((dirp = readdir(dp)) != NULL)
+  {
+    if((std::string(dirp->d_name).compare(".") != 0) && 
+       (std::string(dirp->d_name).compare("..") != 0))
+    files.push_back(std::string(dirp->d_name));
+  }
+  closedir(dp);
+
+  std::sort(files.begin(), files.end(), compare);
+  return true;
+}
+
+std::string leatherman::getTime()
+{
+  time_t clock;
+  time(&clock);
+  std::string time(ctime(&clock));;
+  time.erase(time.size()-6, 6);
+  return time;
 }
 
 bool leatherman::writePointsToFile(std::string filename, const std::vector<Eigen::Vector3d> &pts)
