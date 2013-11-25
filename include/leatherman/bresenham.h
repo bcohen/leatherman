@@ -37,6 +37,14 @@
 namespace leatherman
 {
 
+typedef struct
+{
+  int x;
+  int y;
+  int z;
+  bool bIsObstacle;
+} CELL3V;
+
 typedef struct 
 {
   int X1, Y1, Z1;
