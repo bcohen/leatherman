@@ -35,6 +35,7 @@ namespace leatherman
   bool poseFromMsg(const geometry_msgs::Pose &tmsg, Eigen::Affine3d &t);
   void msgFromPose(const Eigen::Affine3d &t, geometry_msgs::Pose &tmsg);
   void msgFromPose(const Eigen::Affine3d &t, geometry_msgs::Transform &tmsg);
+  void msgFromPose(const KDL::Frame &f, geometry_msgs::Pose &p);
   void quatMsgToRPY(const geometry_msgs::Quaternion &q, double &r, double &p, double &y);
   void rpyToQuatMsg(double r, double p, double y, geometry_msgs::Quaternion &q);
   void transformKDLToEigen(const KDL::Frame &k, Eigen::Affine3d &e);
@@ -69,6 +70,7 @@ namespace leatherman
   void scaleVertices(const std::vector<Eigen::Vector3d> &vin, double sx, double sy, double sz, std::vector<Eigen::Vector3d> &vout);
   void scaleVertices(const std::vector<geometry_msgs::Point> &vin, double sx, double sy, double sz, std::vector<geometry_msgs::Point> &vout);
   double getColladaFileScale(std::string resource);
+  bool getLinkMesh(std::string urdf, std::string name, bool collision, std::string &mesh_resource, geometry_msgs::PoseStamped &pose);
 
   /* Math */
   void multiplyPoses(geometry_msgs::Pose &p1, geometry_msgs::Pose &p2, geometry_msgs::Pose &p);

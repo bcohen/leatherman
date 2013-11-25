@@ -2,6 +2,8 @@
 //#include <geometric_shapes/mesh_operations.h>
 #include <resource_retriever/retriever.h>
 #include <tinyxml.h>
+#include <urdf/model.h>
+
 
 #define SMALL_NUM  0.00000001     // to avoid division overflow
 
@@ -1121,5 +1123,66 @@ double leatherman::getColladaFileScale(std::string resource)
     }
   }
   return unit_scale;
+}
+
+bool leatherman::getLinkMesh(std::string urdf, std::string name, bool collision, std::string &mesh_resource, geometry_msgs::PoseStamped &pose)
+{
+  urdf::Model model;
+  if(!model.initString(urdf))
+  {
+    ROS_ERROR("Something is wrong with the URDF.");
+    return false;
+  }
+
+  boost::shared_ptr<const urdf::Link> link = model.getLink(name);
+  if(link == NULL)
+  {
+    ROS_ERROR("Failed to find link '%s' in URDF.", name.c_str());
+    return false;
+  }
+  if(link->collision == NULL)
+  {
+    ROS_ERROR("Failed to find collision field for link '%s' in URDF.", link->name.c_str());
+    return false;
+  }
+  if(link->collision->geometry == NULL)
+  {
+    ROS_ERROR("Failed to find geometry for link '%s' in URDF. (group: %s)", name.c_str(), link->collision->group_name.c_str());
+    return false;
+  }
+
+  boost::shared_ptr<const urdf::Geometry> geom;
+  if(collision)
+  {
+    geom = link->visual->geometry;
+    pose.pose.position.x = link->visual->origin.position.x;
+    pose.pose.position.y = link->visual->origin.position.y;
+    pose.pose.position.z = link->visual->origin.position.z;
+    link->visual->origin.rotation.getQuaternion(pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w);
+  }
+  else
+  {
+    geom = link->collision->geometry;
+    pose.pose.position.x = link->collision->origin.position.x;
+    pose.pose.position.y = link->collision->origin.position.y;
+    pose.pose.position.z = link->collision->origin.position.z;
+    link->collision->origin.rotation.getQuaternion(pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w);
+  }
+
+  if(geom->type != urdf::Geometry::MESH)
+  {
+    ROS_ERROR("Failed because geometry is not a mesh.");
+    return false;
+  }
+  urdf::Mesh* mesh = (urdf::Mesh*) geom.get();
+  mesh_resource = mesh->filename;
+  pose.header.frame_id = link->parent_joint->child_link_name;
+  return true;
+}
+
+void leatherman::msgFromPose(const KDL::Frame &f, geometry_msgs::Pose &p)
+{
+ p.position.x = f.p[0]; p.position.y = f.p[1]; p.position.z = f.p[2];
+ f.M.GetQuaternion(p.orientation.x, p.orientation.y, p.orientation.z, p.orientation.w);
 }
 

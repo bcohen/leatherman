@@ -536,7 +536,8 @@ visualization_msgs::Marker viz::getTextMarker(geometry_msgs::Pose pose, std::str
 visualization_msgs::Marker viz::getMeshMarker(const geometry_msgs::PoseStamped &pose, const std::string &mesh_resource, int hue, std::string ns, int id)
 {
 	double r = 0.0, g = 0.0, b = 0.0;
-	leatherman::HSVtoRGB(&r, &g, &b, hue, 1.0, 1.0);
+  if(hue > 0)
+  	leatherman::HSVtoRGB(&r, &g, &b, hue, 1.0, 1.0);
 
 	visualization_msgs::Marker marker;
 	marker.header.frame_id = pose.header.frame_id;
@@ -560,6 +561,10 @@ visualization_msgs::Marker viz::getMeshMarker(const geometry_msgs::PoseStamped &
 	marker.color.b = b;
 	marker.color.a = 1.0;
 	marker.mesh_resource = mesh_resource;
+
+  if(hue < 0)
+    marker.mesh_use_embedded_materials = true;
+
   return marker;
 }
 
