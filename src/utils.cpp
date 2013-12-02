@@ -197,7 +197,7 @@ void leatherman::getMeshComponents(shapes::Mesh* mesh, std::vector<int> &triangl
   geometry_msgs::Point v;
 
   // copy vertices
-  ROS_INFO("vertexCount: %d    triangleCount: %d", mesh->vertex_count, mesh->triangle_count); fflush(stdout);
+  ROS_DEBUG("vertexCount: %d    triangleCount: %d", mesh->vertex_count, mesh->triangle_count); fflush(stdout);
   for (unsigned int i = 0 ; i < mesh->vertex_count; ++i)
   {
     v.x = mesh->vertices[3 * i    ];
