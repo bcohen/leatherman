@@ -567,6 +567,24 @@ bool leatherman::getJointPositions(const sensor_msgs::JointState &state, std::ve
   return true; 
 }
 
+void leatherman::findAndReplaceJointPosition(std::string name, double position, sensor_msgs::JointState &state)
+{
+  bool exists = false;
+  for(size_t i = 0; i < state.name.size(); i++)
+  {
+    if(state.name[i].compare(name) == 0)
+    {
+      state.position[i] = position;
+      exists = true;
+    }    
+  }
+  if(!exists)
+  {
+    state.position.push_back(position);
+    state.name.push_back(name);
+  }
+}
+
 bool leatherman::getJointIndex(const KDL::Chain &c, std::string name, int &index)
 {
   for(size_t j = 0; j < c.getNrOfSegments(); ++j)
