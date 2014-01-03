@@ -279,6 +279,30 @@ void leatherman::poseMsgToPoseVector(const geometry_msgs::Pose &pose, std::vecto
   tf::poseMsgToTF(pose, tf_pose);
   tf_pose.getBasis().getRPY(posev[3], posev[4], posev[5]);
 }
+void leatherman::poseVectorToKDL(const std::vector<double> &pose, KDL::Frame &k)
+{
+  k.p.x(pose[0]);
+  k.p.y(pose[1]);
+  k.p.z(pose[2]);
+
+  // RPY
+  if(pose.size() == 6)
+    k.M = KDL::Rotation::RPY(pose[3],pose[4],pose[5]);
+  // quaternion
+  else if(pose.size() > 6)
+    k.M = KDL::Rotation::Quaternion(pose[3],pose[4],pose[5],pose[6]);
+  else
+    ROS_ERROR("Not enough elements to define the pose.");
+}
+
+void leatherman::kdlToPoseVector(const KDL::Frame &k, std::vector<double> &pose)
+{
+  pose.resize(6,0.0);
+  pose[0] = k.p[0];
+  pose[1] = k.p[1];
+  pose[2] = k.p[2];
+  k.M.GetRPY(pose[3], pose[4], pose[5]); 
+}
 
 void leatherman::multiplyPoses(geometry_msgs::Pose &p1, geometry_msgs::Pose &p2, geometry_msgs::Pose &p)
 {
@@ -296,6 +320,15 @@ void leatherman::multiply(const geometry_msgs::Pose &a, const geometry_msgs::Pos
   tf::poseMsgToTF(b, btb);
   btc = bta * btb;
   tf::poseTFToMsg(btc, c);
+}
+
+void leatherman::multiply(const std::vector<double> &a, const std::vector<double> &b, std::vector<double> &c)
+{
+  KDL::Frame fa, fb, fc;
+  poseVectorToKDL(a, fa);
+  poseVectorToKDL(b, fb);
+  fc = fa * fb;
+  kdlToPoseVector(fc, c);
 }
 
 bool leatherman::poseFromMsg(const geometry_msgs::Pose &tmsg, Eigen::Affine3d &t)

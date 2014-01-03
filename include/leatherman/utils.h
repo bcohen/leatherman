@@ -31,6 +31,8 @@ namespace leatherman
   /* Conversions */
   void poseVectorToPoseMsg(const std::vector<double> &pose, geometry_msgs::Pose &pose_msg);
   void poseMsgToPoseVector(const geometry_msgs::Pose &pose, std::vector<double> &posev);
+  void poseVectorToKDL(const std::vector<double> &pose, KDL::Frame &k);
+  void kdlToPoseVector(const KDL::Frame &k, std::vector<double> &pose);
   bool quatFromMsg(const geometry_msgs::Quaternion &qmsg, Eigen::Quaterniond &q);
   bool poseFromMsg(const geometry_msgs::Pose &tmsg, Eigen::Affine3d &t);
   void msgFromPose(const Eigen::Affine3d &t, geometry_msgs::Pose &tmsg);
@@ -75,6 +77,7 @@ namespace leatherman
   /* Math */
   void multiplyPoses(geometry_msgs::Pose &p1, geometry_msgs::Pose &p2, geometry_msgs::Pose &p);
   void multiply(const geometry_msgs::Pose &a, const geometry_msgs::Pose &b, geometry_msgs::Pose &c);
+  void multiply(const std::vector<double> &a, const std::vector<double> &b, std::vector<double> &c);
   void comparePoses(const std::vector<double> &a, const std::vector<double> &b, std::vector<double> &diff);
   void comparePosesAbsolute(const std::vector<double> &a, const std::vector<double> &b, std::vector<double> &diff);
 
