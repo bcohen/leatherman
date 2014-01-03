@@ -117,6 +117,14 @@ void leatherman::printKDLChain(const KDL::Chain &c, std::string text)
   }
 }
 
+std::string leatherman::getString(const std::vector<int> &v)
+{
+  std::stringstream ss;
+  for(std::size_t j = 0; j < v.size(); ++j)
+    ss << std::fixed << v[j] << " ";
+  return ss.str();
+}
+
 std::string leatherman::getString(const std::vector<double> &v, int precision)
 {
   std::stringstream ss;

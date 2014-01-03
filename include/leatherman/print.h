@@ -25,6 +25,7 @@ namespace leatherman
   void printKDLFrames(const std::vector<std::vector<KDL::Frame> > &f, std::string text);
   void printKDLChain(const KDL::Chain &c, std::string text);
 
+  std::string getString(const std::vector<int> &v);
   std::string getString(const std::vector<double> &v, int precision=3);
   std::string getString(const std::vector<bool> &v, std::string t, std::string f);
 }
