@@ -1237,3 +1237,13 @@ void leatherman::msgFromPose(const KDL::Frame &f, geometry_msgs::Pose &p)
  f.M.GetQuaternion(p.orientation.x, p.orientation.y, p.orientation.z, p.orientation.w);
 }
 
+void leatherman::vectorPathToJointTrajectory(const std::vector<std::vector<double> > &path, trajectory_msgs::JointTrajectory &traj)
+{
+  traj.points.resize(path.size());
+  for(size_t i = 0; i < traj.points.size(); ++i)
+  {
+    traj.points[i].positions.resize(path[i].size());
+    for(size_t j = 0; j < traj.points[i].positions.size(); ++j)
+      traj.points[i].positions[j] = path[i][j];
+  }
+}
