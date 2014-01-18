@@ -36,6 +36,12 @@ namespace viz
   /* Line */
   visualization_msgs::Marker getLineMarker(const std::vector<geometry_msgs::Point> points, double thickness, int hue, std::string frame_id, std::string ns, int id=0);
 
+  /* Axis */
+  visualization_msgs::MarkerArray getAxisMarkerArray(const std::vector<double> &pose, double length, std::string frame_id, std::string ns, int id);
+
+  /* Arrows */
+  visualization_msgs::Marker getArrowMarker(const std::vector<double> &start, const std::vector<double> &end, double shaft_diameter, double head_diameter, int hue, std::string frame_id, std::string ns, int id);
+
   /* Text */
   visualization_msgs::Marker getTextMarker(geometry_msgs::Pose pose, std::string text, double size, int hue, std::string frame_id, std::string ns, int id=0);
 

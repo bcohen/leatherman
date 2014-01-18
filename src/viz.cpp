@@ -687,3 +687,51 @@ visualization_msgs::MarkerArray viz::getCollisionObjectMarkerArray(const arm_nav
   return getShapesMarkerArray(obj.shapes, obj.poses, color, obj.header.frame_id, ns, id);  
 }
 
+visualization_msgs::Marker viz::getArrowMarker(const std::vector<double> &start, const std::vector<double> &end, double shaft_diameter, double head_diameter, int hue, std::string frame_id, std::string ns, int id)
+{
+  visualization_msgs::Marker m;;
+  double r=0,g=0,b=0;
+
+  // if hue < 1. then set it to black
+  if(hue >= 0)
+    leatherman::HSVtoRGB(&r, &g, &b, hue, 1.0, 1.0);
+
+  m.header.stamp = ros::Time::now();
+  m.header.frame_id = frame_id;
+  m.ns = ns;
+  m.id = id;
+  m.type = visualization_msgs::Marker::ARROW;
+  m.action = visualization_msgs::Marker::ADD;
+  m.points.resize(2);
+  m.points[0].x = start[0];
+  m.points[0].y = start[1];
+  m.points[0].z = start[2];
+  m.points[1].x = end[0];
+  m.points[1].y = end[1];
+  m.points[1].z = end[2];
+  m.scale.x = shaft_diameter;
+  m.scale.y = head_diameter;
+  m.scale.z = 0;
+  m.color.r = r;
+  m.color.g = g;
+  m.color.b = b;
+  m.color.a = 0.8;
+  m.lifetime = ros::Duration(0.0);
+  return m;
+}
+
+visualization_msgs::MarkerArray viz::getAxisMarkerArray(const std::vector<double> &pose, double length, std::string frame_id, std::string ns, int id)
+{
+  visualization_msgs::MarkerArray ma;
+  std::vector<double> redv(6,0), bluev(6,0), greenv(6,0), arrow_pose(6,0);
+  redv[0] = length; greenv[1] = length; bluev[2] = length;
+
+  leatherman::multiply(pose, redv, arrow_pose);
+  ma.markers.push_back(getArrowMarker(pose, arrow_pose, length/10.0, length/5.0, 0, frame_id, ns, id));
+  leatherman::multiply(pose, greenv, arrow_pose);
+  ma.markers.push_back(getArrowMarker(pose, arrow_pose, length/10.0, length/5.0, 120, frame_id, ns, id+1));
+  leatherman::multiply(pose, bluev, arrow_pose);
+  ma.markers.push_back(getArrowMarker(pose, arrow_pose, length/10.0, length/5.0, 240, frame_id, ns, id+2));
+  return ma;
+}
+
