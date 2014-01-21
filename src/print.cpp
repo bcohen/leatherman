@@ -145,3 +145,19 @@ std::string leatherman::getString(const std::vector<bool> &v, std::string t, std
   }
   return ss.str();
 }
+
+std::string leatherman::getPoseString(const std::vector<double> &pose, int precision)
+{ 
+  if(pose.size() < 6)
+    return std::string();
+
+  std::stringstream ss;
+  ss << "xyz: " << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << pose[0] << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << pose[1] << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << pose[2] << " ";
+  ss << "rpy: " << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << pose[3] << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << pose[4] << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << pose[5] << " ";
+  return ss.str();
+}
+
