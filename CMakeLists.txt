@@ -27,6 +27,7 @@ rosbuild_add_library(${PROJECT_NAME}  src/utils.cpp
                                       src/file.cpp
                                       src/viz.cpp
                                       src/bresenham.cpp
+                                      src/objects.cpp
                                       src/binvox.cpp
                                       src/stl.cpp)
 
