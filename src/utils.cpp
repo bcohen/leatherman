@@ -574,8 +574,32 @@ bool leatherman::findJointPosition(const sensor_msgs::JointState &state, std::st
   return false;
 }
 
+bool leatherman::getJointPosition(const sensor_msgs::JointState &state, std::string name, double &position)
+{
+  size_t i;
+  for(i = 0; i < state.position.size(); ++i)
+  {
+    if(state.name.size() < i)
+    {
+      ROS_ERROR("Not enough joint names in JointState message.");
+      return false;
+    }
+
+    if(name.compare(state.name[i]) == 0)
+    {
+      position = state.position[i];
+      break;
+    } 
+  }
+  if(i == state.position.size())
+    return false;
+
+  return true; 
+}
+
 bool leatherman::getJointPositions(const sensor_msgs::JointState &state, std::vector<std::string> &names, std::vector<double> &positions)
 {
+  /* This isn't optimized in any way. Optimize this one day. */
   size_t nind = 0;
   positions.resize(names.size());
   for(size_t i = 0; i < state.position.size(); ++i)
@@ -586,11 +610,15 @@ bool leatherman::getJointPositions(const sensor_msgs::JointState &state, std::ve
       return false;
     }
 
-    if(names[nind].compare(state.name[i]) == 0)
+    for(size_t j = 0; j < names.size(); ++j)
     {
-      positions[nind] = state.position[i];
-      nind++;
-    } 
+      if(names[j].compare(state.name[i]) == 0)
+      {
+        positions[j] = state.position[i];
+        nind++;
+        break;
+      } 
+    }
     if(nind == names.size())
       break;
   }

@@ -23,7 +23,7 @@ visualization_msgs::Marker viz::getCubeMarker(std::vector<double> &cube, std::ve
   
   geometry_msgs::Pose pose;
   pose.position.x = cube[0];
-  pose.position.y= cube[1];
+  pose.position.y = cube[1];
   pose.position.z = cube[2];
   pose.orientation.w = 1;
   return getCubeMarker(pose, dim, color, frame_id, ns, id);

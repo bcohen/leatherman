@@ -85,6 +85,7 @@ namespace leatherman
   /* Search (string comparisons) */
   bool findJointPosition(const sensor_msgs::JointState &state, std::string name, double &position);
   bool getJointPositions(const sensor_msgs::JointState &state, std::vector<std::string> &names, std::vector<double> &positions);
+  bool getJointPosition(const sensor_msgs::JointState &state, std::string name, double &position);
   void findAndReplaceJointPosition(std::string name, double position, sensor_msgs::JointState &state);
   bool getPose(const arm_navigation_msgs::MultiDOFJointState &state, std::string frame_id, std::string child_frame_id, geometry_msgs::Pose &pose);
   bool getFrame(const arm_navigation_msgs::MultiDOFJointState &state, std::string frame_id, std::string child_frame_id, KDL::Frame &frame);

@@ -7,13 +7,13 @@
 #include <leatherman/utils.h>
 #include <leatherman/print.h>
 
+namespace leatherman {
 
 bool getCollisionObjects(std::string filename, std::string frame_id, bool transform_objects, geometry_msgs::Pose &object_transform, std::vector<arm_navigation_msgs::CollisionObject> &collision_objects, visualization_msgs::MarkerArray &object_markers)
 {
   int num_obs;
   char sTemp[1024];
   visualization_msgs::Marker marker;
-  visualization_msgs::MarkerArray marker_array;
   std::vector<std::vector<double> > objects, object_colors;
   std::vector<double> object_transform_v;
   std::vector<std::string> object_ids;
@@ -119,8 +119,9 @@ bool getCollisionObjects(std::string filename, std::string frame_id, bool transf
     dim[1] = objects[i][4];
     dim[2] = objects[i][5];
     marker = viz::getCubeMarker(object.poses[0], dim, object_colors[i], frame_id, "collision_objects", int(i));
-    marker_array.markers.push_back(marker);
+    object_markers.markers.push_back(marker);
   }
   return true;
 }
 
+}
