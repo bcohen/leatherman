@@ -22,6 +22,8 @@ namespace viz
 
   visualization_msgs::MarkerArray getPosesMarkerArray(const std::vector<std::vector<double> > &poses, std::string frame_id, std::string ns, int id=0);
 
+  visualization_msgs::MarkerArray getPoseMarkerArray(const geometry_msgs::Pose &pose, std::string frame_id, double radius, double arrow_length, double arrow_width, double hue, double alpha, std::string ns, int id);
+
   /* Spheres */
   visualization_msgs::Marker getSphereMarker(double x, double y, double z, double radius, int hue, std::string frame_id, std::string ns, int id=0);
 
@@ -50,7 +52,7 @@ namespace viz
   /* Cubes */
   visualization_msgs::Marker getCubeMarker(geometry_msgs::PoseStamped pose, std::vector<double> dim, int hue, std::string ns, int id=0);
 
-  visualization_msgs::Marker getCubeMarker(std::vector<double> &cube, std::vector<double> &color, std::string frame_id, std::string ns, int id=0);
+  visualization_msgs::Marker getCubeMarker(const std::vector<double> &cube, std::vector<double> &color, std::string frame_id, std::string ns, int id=0);
 
   visualization_msgs::Marker getCubeMarker(geometry_msgs::Pose &pose, std::vector<double> &dim, std::vector<double> &color, std::string frame_id, std::string ns, int id=0);
 

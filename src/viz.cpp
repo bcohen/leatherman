@@ -10,7 +10,7 @@ visualization_msgs::Marker viz::getCubeMarker(geometry_msgs::PoseStamped pose, s
   return getCubeMarker(pose.pose, dim, color, pose.header.frame_id, ns, id);
 }
 
-visualization_msgs::Marker viz::getCubeMarker(std::vector<double> &cube, std::vector<double> &color, std::string frame_id, std::string ns, int id)
+visualization_msgs::Marker viz::getCubeMarker(const std::vector<double> &cube, std::vector<double> &color, std::string frame_id, std::string ns, int id)
 {
   if(cube.size() < 6)
   {
@@ -198,6 +198,48 @@ visualization_msgs::MarkerArray viz::getPoseMarkerArray(const geometry_msgs::Pos
 visualization_msgs::MarkerArray viz::getPoseMarkerArray(const geometry_msgs::PoseStamped &pose, std::string ns, int id)
 {
   return viz::getPoseMarkerArray(pose.pose, pose.header.frame_id, ns, id);
+}
+
+visualization_msgs::MarkerArray viz::getPoseMarkerArray(const geometry_msgs::Pose &pose, std::string frame_id, double radius, double arrow_length, double arrow_width, double hue, double alpha, std::string ns, int id)
+{
+  double r=0,g=0,b=0;
+  leatherman::HSVtoRGB(&r, &g, &b, hue, 1.0, 1.0);
+  visualization_msgs::MarkerArray ma;
+  ros::Time time = ros::Time::now();
+
+  ma.markers.clear();
+  ma.markers.resize(2);
+  ma.markers[0].header.stamp = time;
+  ma.markers[0].header.frame_id = frame_id;
+  ma.markers[0].ns = ns;
+  ma.markers[0].id = id;
+  ma.markers[0].type = visualization_msgs::Marker::ARROW;
+  ma.markers[0].action = visualization_msgs::Marker::ADD;
+  ma.markers[0].pose = pose;
+  ma.markers[0].scale.x = arrow_length;
+  ma.markers[0].scale.y = arrow_width;
+  ma.markers[0].scale.z = arrow_width;
+  ma.markers[0].color.r = r;
+  ma.markers[0].color.g = g;
+  ma.markers[0].color.b = b;
+  ma.markers[0].color.a = alpha;
+  ma.markers[0].lifetime = ros::Duration(0.0);
+  ma.markers[1].header.stamp = time;
+  ma.markers[1].header.frame_id = frame_id;
+  ma.markers[1].ns = ns;
+  ma.markers[1].id = id+1;
+  ma.markers[1].type = visualization_msgs::Marker::SPHERE;
+  ma.markers[1].action = visualization_msgs::Marker::ADD;
+  ma.markers[1].pose = pose;
+  ma.markers[1].scale.x = radius;
+  ma.markers[1].scale.y = radius;
+  ma.markers[1].scale.z = radius;
+  ma.markers[1].color.r = r;
+  ma.markers[1].color.g = g;
+  ma.markers[1].color.b = b;
+  ma.markers[1].color.a = alpha;
+  ma.markers[1].lifetime = ros::Duration(0.0);
+  return ma;
 }
 
 visualization_msgs::Marker viz::getSphereMarker(double x, double y, double z, double radius, int hue, std::string frame_id, std::string ns, int id)
