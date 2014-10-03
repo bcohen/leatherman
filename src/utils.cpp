@@ -910,6 +910,9 @@ bool leatherman::getFrame(const arm_navigation_msgs::MultiDOFJointState &state, 
 
 bool leatherman::getJointLimits(const urdf::Model *urdf, std::string root_name, std::string tip_name, std::vector<std::string> &joint_names, std::vector<double> &min_limits, std::vector<double> &max_limits, std::vector<bool> &continuous, bool safety_limits)
 {
+  if(joint_names.empty())
+    return false;
+
   unsigned int num_joints = 0;
   boost::shared_ptr<const urdf::Link> link = urdf->getLink(tip_name);
   while(link && link->name != root_name)
@@ -968,7 +971,7 @@ bool leatherman::getJointLimits(const urdf::Model *urdf, std::string root_name, 
         joint_names[num_joints-i-1] = joint->name;
         min_limits[num_joints-i-1] = -M_PI;
         max_limits[num_joints-i-1] = M_PI;
-        continuous[num_joints-i-i] = true;
+        continuous[num_joints-i-1] = true;
       }
       ROS_DEBUG("[%s] min: %0.3f  max: %0.3f", joint_names[num_joints-i-1].c_str(), min_limits[num_joints-i-1], max_limits[num_joints-i-1]);
       i++;
