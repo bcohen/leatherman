@@ -124,4 +124,27 @@ bool getCollisionObjects(std::string filename, std::string frame_id, bool transf
   return true;
 }
 
+void convertShapeToSolidPrimitive(const arm_navigation_msgs::Shape &shape, shape_msgs::SolidPrimitive &solid)
+{
+  if(shape.type == arm_navigation_msgs::Shape::SPHERE)
+    solid.type = shape_msgs::SolidPrimitive::SPHERE;
+  else if(shape.type == arm_navigation_msgs::Shape::BOX)
+    solid.type = shape_msgs::SolidPrimitive::BOX;
+  else if(shape.type == arm_navigation_msgs::Shape::CYLINDER)
+    solid.type = shape_msgs::SolidPrimitive::CYLINDER;
+  else if(shape.type == arm_navigation_msgs::Shape::MESH)
+    ROS_ERROR("[objects] Cannot convert shape of type MESH to SolidPrimitive.");
+  else
+    ROS_ERROR("[objects] Invalid shape type '%d'.", shape.type);
+
+  if(shape.type == arm_navigation_msgs::Shape::CYLINDER)
+  {
+    solid.dimensions.resize(2);
+    solid.dimensions[shape_msgs::SolidPrimitive::CYLINDER_RADIUS] = shape.dimensions[0];
+    solid.dimensions[shape_msgs::SolidPrimitive::CYLINDER_HEIGHT] = shape.dimensions[1];
+  }
+  else
+    solid.dimensions = shape.dimensions;
+}
+
 }
