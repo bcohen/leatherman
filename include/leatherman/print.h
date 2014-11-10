@@ -28,6 +28,7 @@ namespace leatherman
   std::string getString(const std::vector<int> &v);
   std::string getString(const std::vector<double> &v, int precision=3);
   std::string getString(const std::vector<bool> &v, std::string t, std::string f);
+  std::string getString(const geometry_msgs::Pose &p, int precision);
   std::string getPoseString(const std::vector<double> &pose, int precision);
 }
 

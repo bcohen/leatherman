@@ -133,6 +133,19 @@ std::string leatherman::getString(const std::vector<double> &v, int precision)
   return ss.str();
 }
 
+std::string leatherman::getString(const geometry_msgs::Pose &p, int precision)
+{
+  std::stringstream ss;
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << "xyz: " << p.position.x << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << p.position.y << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << p.position.z << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << "quat: " << p.orientation.x << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << p.orientation.y << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << p.orientation.z << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << p.orientation.w << " ";
+  return ss.str();
+}
+
 std::string leatherman::getString(const std::vector<bool> &v, std::string t, std::string f)
 {
   std::stringstream ss;
