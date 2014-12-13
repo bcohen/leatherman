@@ -76,6 +76,7 @@ namespace leatherman
   bool getLinkMesh(std::string urdf, std::string name, bool collision, std::string &mesh_resource, geometry_msgs::PoseStamped &pose);
 
   /* Math */
+  bool isNaN(const std::vector<double> &v);
   void multiplyPoses(geometry_msgs::Pose &p1, geometry_msgs::Pose &p2, geometry_msgs::Pose &p);
   void multiply(const geometry_msgs::Pose &a, const geometry_msgs::Pose &b, geometry_msgs::Pose &c);
   void multiply(const std::vector<double> &a, const std::vector<double> &b, std::vector<double> &c);

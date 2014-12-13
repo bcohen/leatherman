@@ -1278,3 +1278,15 @@ void leatherman::vectorPathToJointTrajectory(const std::vector<std::vector<doubl
       traj.points[i].positions[j] = path[i][j];
   }
 }
+
+bool leatherman::isNaN(const std::vector<double> &v)
+{
+  for(size_t i = 0; i < v.size(); ++i)
+  {
+    if(isnan(v[i]))
+      return false;
+  }
+  return true;
+}
+
+
