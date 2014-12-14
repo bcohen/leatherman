@@ -77,6 +77,9 @@ namespace leatherman
 
   /* Math */
   bool isNaN(const std::vector<double> &v);
+  bool isInf(double d);
+  bool isInf(const std::vector<double> &v);
+  bool isNaNOrInf(const std::vector<double> &v);
   void multiplyPoses(geometry_msgs::Pose &p1, geometry_msgs::Pose &p2, geometry_msgs::Pose &p);
   void multiply(const geometry_msgs::Pose &a, const geometry_msgs::Pose &b, geometry_msgs::Pose &c);
   void multiply(const std::vector<double> &a, const std::vector<double> &b, std::vector<double> &c);

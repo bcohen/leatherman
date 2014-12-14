@@ -773,7 +773,7 @@ void leatherman::setLoggerLevel(std::string package, std::string name, std::stri
   //std::string logger_name = ROSCONSOLE_DEFAULT_NAME + std::string(".") + name;
   std::string logger_name = package + std::string(".") + name;
 
-  ROS_INFO("Setting %s to %s level", logger_name.c_str(), level.c_str());
+  ROS_DEBUG("Setting %s to %s level", logger_name.c_str(), level.c_str());
 
   log4cxx::LoggerPtr my_logger = log4cxx::Logger::getLogger(logger_name);
 
@@ -793,7 +793,7 @@ void leatherman::setLoggerLevel(std::string name, std::string level)
   //std::string logger_name = ROSCONSOLE_DEFAULT_NAME + std::string(".") + name;
   std::string logger_name = name;
 
-  ROS_INFO("Setting %s to %s level", logger_name.c_str(), level.c_str());
+  ROS_DEBUG("Setting %s to %s level", logger_name.c_str(), level.c_str());
 
   log4cxx::LoggerPtr my_logger = log4cxx::Logger::getLogger(logger_name);
 
@@ -1279,14 +1279,32 @@ void leatherman::vectorPathToJointTrajectory(const std::vector<std::vector<doubl
   }
 }
 
+bool leatherman::isInf(double d)
+{
+  return d > DBL_MAX || d < -DBL_MAX;
+}
+
 bool leatherman::isNaN(const std::vector<double> &v)
 {
   for(size_t i = 0; i < v.size(); ++i)
   {
-    if(isnan(v[i]))
-      return false;
+    if(v[i] != v[i])
+      return true;
   }
-  return true;
+  return false;
 }
 
+bool leatherman::isInf(const std::vector<double> &v)
+{
+  for(size_t i = 0; i < v.size(); ++i)
+  {
+    if(isInf(v[i]))
+      return true;
+  }
+  return false;
+}
 
+bool leatherman::isNaNOrInf(const std::vector<double> &v)
+{
+  return isNaN(v) || isInf(v);
+}
