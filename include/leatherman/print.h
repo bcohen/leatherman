@@ -10,6 +10,7 @@
 #include <Eigen/Geometry>
 #include <kdl/frames.hpp>
 #include <kdl/chain.hpp>
+#include <tf/LinearMath/Transform.h>
 
 namespace leatherman
 {
@@ -29,6 +30,7 @@ namespace leatherman
   std::string getString(const std::vector<double> &v, int precision=3);
   std::string getString(const std::vector<bool> &v, std::string t, std::string f);
   std::string getString(const geometry_msgs::Pose &p, int precision);
+  std::string getString(const tf::Transform &bt, int precision);
   std::string getPoseString(const std::vector<double> &pose, int precision);
 }
 

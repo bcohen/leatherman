@@ -174,3 +174,16 @@ std::string leatherman::getPoseString(const std::vector<double> &pose, int preci
   return ss.str();
 }
 
+std::string leatherman::getString(const tf::Transform &bt, int precision)
+{
+  std::stringstream ss;
+  ss << "xyz: " << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << bt.getOrigin().getX() << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << bt.getOrigin().getY() << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << bt.getOrigin().getZ() << " ";
+  ss << "  quat: " << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << bt.getRotation().x() << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << bt.getRotation().y() << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << bt.getRotation().z() << " ";
+  ss << std::fixed << std::setw(precision) << std::setprecision(precision) << std::showpoint << bt.getRotation().w() << " ";
+  return ss.str();
+}
+
