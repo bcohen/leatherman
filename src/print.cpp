@@ -21,6 +21,9 @@ void leatherman::printJointTrajectory(const trajectory_msgs::JointTrajectory &tr
     ROS_INFO("[%s] start_time: %0.3f", text.c_str(), traj.header.stamp.toSec());
   for(unsigned int i = 0; i < traj.points.size(); i++)
   {
+    if(traj.points[i].positions.size() < 7)
+      continue;
+
     ROS_INFO("[%s] [% 2d] % 1.4f % 1.4f % 1.4f % 1.4f % 1.4f % 1.4f % 1.4f   time_from_start: % 0.3f", text.c_str(), i,traj.points[i].positions[0],traj.points[i].positions[1],traj.points[i].positions[2],traj.points[i].positions[3],traj.points[i].positions[4],traj.points[i].positions[5],traj.points[i].positions[6], traj.points[i].time_from_start.toSec());
   }
 }
@@ -29,6 +32,9 @@ void leatherman::printJointTrajectoryPoints(const std::vector<trajectory_msgs::J
 {
   for(unsigned int i = 0; i < points.size(); i++)
   {
+    if(points[i].positions.size() < 7)
+      continue;
+
     ROS_INFO("[%s] [% 2d] % 1.4f % 1.4f % 1.4f % 1.4f % 1.4f % 1.4f % 1.4f   time_from_start: % 0.3f", text.c_str(), i,points[i].positions[0],points[i].positions[1],points[i].positions[2],points[i].positions[3],points[i].positions[4],points[i].positions[5],points[i].positions[6], points[i].time_from_start.toSec());
   }
 }
