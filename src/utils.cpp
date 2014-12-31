@@ -1308,3 +1308,15 @@ bool leatherman::isNaNOrInf(const std::vector<double> &v)
 {
   return isNaN(v) || isInf(v);
 }
+
+void leatherman::getInverse(const geometry_msgs::Pose &in, geometry_msgs::Pose &out)
+{
+  KDL::Frame fin, fout;
+  fin.p.x(in.position.x);
+  fin.p.y(in.position.y);
+  fin.p.z(in.position.z);
+  fin.M = KDL::Rotation::Quaternion(in.orientation.x, in.orientation.y, in.orientation.z, in.orientation.w);
+  fout = fin.Inverse();
+  msgFromPose(fout, out);  
+}
+

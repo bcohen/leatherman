@@ -46,6 +46,7 @@ namespace leatherman
   void poseMsgTobtTransform(const geometry_msgs::Pose &pose, tf::Transform &bt);
   void tfVector3ToEigen(const tf::Vector3 &bt, Eigen::Vector3d &e);
   void vectorPathToJointTrajectory(const std::vector<std::vector<double> > &path, trajectory_msgs::JointTrajectory &traj);
+  void getInverse(const geometry_msgs::Pose &in, geometry_msgs::Pose &out);
 
   double getYaw(const geometry_msgs::Quaternion &q);
   void setRPY(double roll, double pitch, double yaw, Eigen::Matrix3d &m);
