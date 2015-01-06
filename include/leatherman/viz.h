@@ -70,6 +70,8 @@ namespace viz
 
   visualization_msgs::MarkerArray getCollisionObjectMarkerArray(const arm_navigation_msgs::CollisionObject &obj, const std::vector<double> &hue, std::string ns, int id);
 
+  visualization_msgs::MarkerArray getCollisionObjectMarkerArray(const arm_navigation_msgs::CollisionObject &obj, const std::vector<double> &hue, bool add_padding, std::string ns, int id);
+
   /* Removal */
   visualization_msgs::MarkerArray getRemoveMarkerArray(std::string ns, int max_id);
 };

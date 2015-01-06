@@ -722,11 +722,26 @@ visualization_msgs::MarkerArray viz::getShapesMarkerArray(const std::vector<arm_
 
 visualization_msgs::MarkerArray viz::getCollisionObjectMarkerArray(const arm_navigation_msgs::CollisionObject &obj, const std::vector<double> &hue, std::string ns, int id)
 {
+  return getCollisionObjectMarkerArray(obj, hue, false, ns, id);
+}
+
+visualization_msgs::MarkerArray viz::getCollisionObjectMarkerArray(const arm_navigation_msgs::CollisionObject &obj, const std::vector<double> &hue, bool add_padding, std::string ns, int id)
+{
   std::vector<std::vector<double> > color(hue.size(), std::vector<double>(4,1.0));
   for(size_t i = 0; i < color.size(); ++i)
     leatherman::HSVtoRGB(&(color[i][0]), &(color[i][1]), &(color[i][2]), hue[i], 1.0, 1.0);
 
-  return getShapesMarkerArray(obj.shapes, obj.poses, color, obj.header.frame_id, ns, id);  
+  std::vector<arm_navigation_msgs::Shape> shapes = obj.shapes;
+  if(add_padding)
+  {
+    for(size_t i = 0; i < shapes.size(); ++i)
+    {
+      for(size_t j = 0; j < shapes[i].dimensions.size(); ++j)
+        shapes[i].dimensions[j] += obj.padding;
+    }
+  }
+
+  return getShapesMarkerArray(shapes, obj.poses, color, obj.header.frame_id, ns, id);  
 }
 
 visualization_msgs::Marker viz::getArrowMarker(const std::vector<double> &start, const std::vector<double> &end, double shaft_diameter, double head_diameter, int hue, std::string frame_id, std::string ns, int id)
