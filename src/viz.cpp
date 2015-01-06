@@ -732,7 +732,7 @@ visualization_msgs::MarkerArray viz::getCollisionObjectMarkerArray(const arm_nav
     leatherman::HSVtoRGB(&(color[i][0]), &(color[i][1]), &(color[i][2]), hue[i], 1.0, 1.0);
 
   std::vector<arm_navigation_msgs::Shape> shapes = obj.shapes;
-  if(add_padding)
+  if(add_padding && obj.padding > 0.0 && obj.padding < 10.0)
   {
     for(size_t i = 0; i < shapes.size(); ++i)
     {
