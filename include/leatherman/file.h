@@ -20,6 +20,10 @@ namespace leatherman
 
   bool writeJointTrajectoryToFile(FILE** file, const trajectory_msgs::JointTrajectory &traj);
 
+  bool writeJointTrajectoryToFile(std::string filename, const trajectory_msgs::JointTrajectory &traj);
+
+  bool readJointTrajectoryFromFile(std::string filename, trajectory_msgs::JointTrajectory &traj);
+
   bool writePointsToFile(std::string filename, const std::vector<Eigen::Vector3d> &pts);
 
   bool readPointsInFile(std::string filename, std::vector<Eigen::Vector3d> &pts);

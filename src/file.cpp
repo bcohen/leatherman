@@ -63,6 +63,84 @@ bool leatherman::writeJointTrajectoryToFile(FILE** file, const trajectory_msgs::
   return true;
 }
 
+bool leatherman::writeJointTrajectoryToFile(std::string filename, const trajectory_msgs::JointTrajectory &traj)
+{
+  FILE* f = NULL;
+  if((f=fopen(filename.c_str(),"a")) == NULL)
+  {
+    ROS_ERROR("Failed to open file for writing. {%s}", filename.c_str());
+    return false;
+  }
+
+  return writeJointTrajectoryToFile(&f, traj);
+}
+
+// NOTE: intended to only be used for 7-DoF joint trajectories
+bool leatherman::readJointTrajectoryFromFile(std::string filename, trajectory_msgs::JointTrajectory &traj)
+{
+  FILE* f = NULL;
+  if((f=fopen(filename.c_str(),"a")) == NULL)
+  {
+    ROS_ERROR("Failed to open file for writing. {%s}", filename.c_str());
+    return false;
+  }
+
+  int waypoint_num;
+  double t_start;
+  char buf[1024];
+  std::string velocities, accelerations, positions, time_from_start;
+  trajectory_msgs::JointTrajectoryPoint pt;
+  pt.positions.resize(7,0.0);
+  pt.accelerations.resize(7,0.0);
+  pt.velocities.resize(7,0.0);
+
+  while(!feof(f))
+  {
+
+    if(fscanf(f, "%d, %s, %lf, ", &waypoint_num, buf, &t_start) < 1)
+      return false;
+    time_from_start = buf;
+
+    // positions
+    if(fscanf(f,"%s, %lf, %lf, %lf, %lf, %lf, %lf, %lf, ", buf, &(pt.positions[0]), &(pt.positions[1]), &(pt.positions[2]), &(pt.positions[3]), &(pt.positions[4]), &(pt.positions[5]), &(pt.positions[6])) < 1)
+    {
+      ROS_ERROR("Error while parsing JointTrajectoryPoint positions. (waypoint: %d)", waypoint_num);
+      return false;
+    }
+    positions = buf;
+
+    // velocities
+    if(fscanf(f,"%s, %lf, %lf, %lf, %lf, %lf, %lf, %lf, ", buf, &(pt.velocities[0]), &(pt.velocities[1]), &(pt.velocities[2]), &(pt.velocities[3]), &(pt.velocities[4]), &(pt.velocities[5]), &(pt.velocities[6])) < 1)
+    {
+      ROS_ERROR("Error while parsing JointTrajectoryPoint velocities. (waypoint: %d)", waypoint_num);
+      return false;
+    }
+    velocities = buf;
+
+    // accelerations
+    if(fscanf(f,"%s, %lf, %lf, %lf, %lf, %lf, %lf, %lf, \n", buf, &(pt.accelerations[0]), &(pt.accelerations[1]), &(pt.accelerations[2]), &(pt.accelerations[3]), &(pt.accelerations[4]), &(pt.accelerations[5]), &(pt.accelerations[6])) < 1)
+    {
+      ROS_ERROR("Error while parsing JointTrajectoryPoint accelerations. (waypoint: %d)", waypoint_num);
+      return false;
+    }
+    accelerations = buf;
+    
+    pt.time_from_start.fromSec(t_start);
+    traj.points.push_back(pt);
+
+    if(time_from_start.compare("time_from_start") != 0 ||
+        positions.compare("positions") != 0 || 
+        velocities.compare("velocities") != 0 || 
+        accelerations.compare("accelerations") != 0)
+    {
+      ROS_ERROR("Problem in the JointTrajectory parser...maybe we don't have 7 joints in the trajectory?");
+      return false;
+    }
+  }
+  fclose(f);
+  return true;
+}
+
 bool leatherman::getFolderContents(std::string folder_name, std::vector<std::string>& files)
 {
   DIR *dp;
