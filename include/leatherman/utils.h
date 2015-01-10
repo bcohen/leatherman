@@ -26,6 +26,9 @@
 #include <sensor_msgs/JointState.h>
 #include <arm_navigation_msgs/MultiDOFJointState.h>
 
+// lm is a much more convenient namespace than leatherman. See the bottom
+// for the namespace aliasing.
+
 namespace leatherman
 {
   /* Conversions */
@@ -46,7 +49,9 @@ namespace leatherman
   void poseMsgTobtTransform(const geometry_msgs::Pose &pose, tf::Transform &bt);
   void tfVector3ToEigen(const tf::Vector3 &bt, Eigen::Vector3d &e);
   void vectorPathToJointTrajectory(const std::vector<std::vector<double> > &path, trajectory_msgs::JointTrajectory &traj);
+
   void getInverse(const geometry_msgs::Pose &in, geometry_msgs::Pose &out);
+  void getInverse(const std::vector<double> &in, std::vector<double> &out);
 
   double getYaw(const geometry_msgs::Quaternion &q);
   void setRPY(double roll, double pitch, double yaw, Eigen::Matrix3d &m);
@@ -110,5 +115,7 @@ namespace leatherman
   void setLoggerLevel(std::string package, std::string name, std::string level);
   void setLoggerLevel(std::string name, std::string level);
 }
+
+namespace lm=leatherman;
 
 #endif

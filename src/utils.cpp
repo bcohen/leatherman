@@ -1320,3 +1320,16 @@ void leatherman::getInverse(const geometry_msgs::Pose &in, geometry_msgs::Pose &
   msgFromPose(fout, out);  
 }
 
+void leatherman::getInverse(const std::vector<double> &in, std::vector<double> &out)
+{
+  if(in.size() < 6)
+  {
+    ROS_ERROR("Failed to getInverse(). Input pose vector has %d elements.", int(in.size()));
+    return;
+  }
+  KDL::Frame fin,fout;
+  poseVectorToKDL(in, fin);
+  fout = fin.Inverse();
+  kdlToPoseVector(fout, out);
+}
+
