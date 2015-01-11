@@ -792,3 +792,38 @@ visualization_msgs::MarkerArray viz::getAxisMarkerArray(const std::vector<double
   return ma;
 }
 
+void viz::setNamespace(visualization_msgs::MarkerArray &ma, std::string ns)
+{
+  for(size_t i = 0; i < ma.markers.size(); ++i)
+  {
+    ma.markers[i].ns = ns;
+    ma.markers[i].id = int(i); 
+  }
+}
+
+void viz::setColor(visualization_msgs::MarkerArray &ma, int hue)
+{
+  std::vector<double> color(4,1);
+  leatherman::HSVtoRGB(&(color[0]), &(color[1]), &(color[2]), hue, 1.0, 1.0);
+  setColor(ma, color);
+}
+
+void viz::setColor(visualization_msgs::MarkerArray &ma, std::vector<double> &color)
+{
+  if(color.size() < 3)
+    return;
+
+  for(size_t i = 0; i < ma.markers.size(); ++i)
+  {
+    ma.markers[i].color.r = color[0];
+    ma.markers[i].color.g = color[1];
+    ma.markers[i].color.b = color[2];
+  }
+}
+
+void viz::setAlpha(visualization_msgs::MarkerArray &ma, double alpha)
+{
+  for(size_t i = 0; i < ma.markers.size(); ++i)
+    ma.markers[i].color.a = alpha;
+}
+

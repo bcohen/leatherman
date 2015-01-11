@@ -74,6 +74,15 @@ namespace viz
 
   /* Removal */
   visualization_msgs::MarkerArray getRemoveMarkerArray(std::string ns, int max_id);
+
+  /* Change values */
+  void setNamespace(visualization_msgs::MarkerArray &ma, std::string ns);
+
+  void setColor(visualization_msgs::MarkerArray &ma, int hue);
+
+  void setColor(visualization_msgs::MarkerArray &ma, std::vector<double> &color);
+
+  void setAlpha(visualization_msgs::MarkerArray &ma, double alpha);
 };
 
 #endif
