@@ -40,3 +40,5 @@ namespace leatherman
 }
 
 #endif
+
+namespace lm=leatherman;
