@@ -737,7 +737,7 @@ visualization_msgs::MarkerArray viz::getCollisionObjectMarkerArray(const arm_nav
     for(size_t i = 0; i < shapes.size(); ++i)
     {
       for(size_t j = 0; j < shapes[i].dimensions.size(); ++j)
-        shapes[i].dimensions[j] += obj.padding;
+        shapes[i].dimensions[j] += obj.padding*2.0;
     }
   }
 
