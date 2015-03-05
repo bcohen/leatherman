@@ -31,7 +31,13 @@ bool leatherman::writeJointTrajectoryToFile(FILE** file, const trajectory_msgs::
     ROS_ERROR("File pointer is null. Not writing.");
     return false;
   }
-  
+ 
+  if(traj.points.empty())
+  {
+   ROS_ERROR("Trajectory is empty. Not writing to file.");
+   return true;
+  }
+
   for(size_t i = 0; i < traj.points.size(); ++i)
   { 
     fprintf(*file, "%d, time_from_start, %1.4f, ", int(i), traj.points[i].time_from_start.toSec());
@@ -71,6 +77,9 @@ bool leatherman::writeJointTrajectoryToFile(std::string filename, const trajecto
     ROS_ERROR("Failed to open file for writing. {%s}", filename.c_str());
     return false;
   }
+
+  if(traj.points.empty())
+    ROS_WARN("Trajectory is empty. Unable to write to '%s'.", filename.c_str());
 
   return writeJointTrajectoryToFile(&f, traj);
 }
