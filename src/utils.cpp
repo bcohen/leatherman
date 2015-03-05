@@ -1288,7 +1288,8 @@ bool leatherman::isNaN(const std::vector<double> &v)
 {
   for(size_t i = 0; i < v.size(); ++i)
   {
-    if(v[i] != v[i])
+    //if(v[i] != v[i])
+    if(isnan(v[i]))
       return true;
   }
   return false;
